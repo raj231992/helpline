@@ -2,7 +2,6 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
@@ -10,6 +9,7 @@ from register_helper.models import Helper
 from register_helper.options import LoginStatus
 from django.shortcuts import get_object_or_404
 from management.notifications import push_notification
+from rest_framework.response import Response
 
 
 class Login(APIView):
@@ -24,11 +24,11 @@ class Login(APIView):
             if helper.login_status!= LoginStatus.PENDING:
                 helper.login_status = LoginStatus.LOGGED_IN
                 helper.save()
-                return JsonResponse({"notification": "successful"}, status=200)
+                return Response({"notification": "successful"}, status=200)
             else:
-                return JsonResponse({"notification": "pending"}, status=200)
+                return Response({"notification": "pending"}, status=200)
         else:
-            return JsonResponse({"notification": "failed"}, status=200)
+            return Response({"notification": "failed"}, status=200)
 
 
 class Logout(APIView):
@@ -41,9 +41,9 @@ class Logout(APIView):
             helper = get_object_or_404(Helper,user=user)
             helper.login_status = LoginStatus.LOGGED_OUT
             helper.save()
-            return JsonResponse({"notification": "successful"}, status=200)
+            return Response({"notification": "successful"}, status=200)
         else:
-            return JsonResponse({"notification": "failed"}, status=200)
+            return Response({"notification": "failed"}, status=200)
 
 
 class ActivateHelper(APIView):
@@ -57,6 +57,6 @@ class ActivateHelper(APIView):
             helper.save()
             push_notification(helper.gcm_canonical_id,"Account Activated")
 
-            return JsonResponse({"notification": "successful"}, status=200)
+            return Response({"notification": "successful"}, status=200)
         else:
-            return JsonResponse({"notification": "failed"}, status=200)
+            return Response({"notification": "failed"}, status=200)
