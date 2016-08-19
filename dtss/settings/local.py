@@ -3,7 +3,7 @@ DJANGO_SETTINGS_MODULE for local development
 """
 
 from .base_settings import *  # pylint: disable=W0614,W0401
-from .conf import *  # pylint: disable=W0614,W0401
+# from .conf import *  # pylint: disable=W0614,W0401
 
 SECRET_KEY = 'dtss_e!)pgbntd32!=8#c17+yr@esj*89vv9u%2+k+y(fw@t_(jeodd_iitbombay'
 
