@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'task_manager',
     'register_helper',
     'register_client',
+    'ivr',
 ]
 
 MIDDLEWARE_CLASSES = [

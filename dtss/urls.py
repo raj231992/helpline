@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^registercall/', include('registercall.urls', namespace='register_call')),
     url(r'^taskmanager/', include('task_manager.urls', namespace='task_manager')),
     url(r'^registerhelper/', include('register_helper.urls', namespace='register_helper')),
+    url(r'^ivr/', include('ivr.urls', namespace='ivr')),
 ]
