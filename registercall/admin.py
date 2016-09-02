@@ -3,7 +3,7 @@ Admin view management for register call
 """
 from django.contrib import admin
 
-from .models import CallRequest, Client, Task
+from .models import CallRequest, Task
 
 class AdminRegisterCall(admin.ModelAdmin):
     list_display = ['helpline','client','created','status']
@@ -21,4 +21,3 @@ class AdminTask(admin.ModelAdmin):
 
 admin.site.register(CallRequest,AdminRegisterCall)
 admin.site.register(Task,AdminTask)
-admin.site.register(Client)
