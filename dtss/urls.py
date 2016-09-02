@@ -18,10 +18,10 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('authentication.urls', namespace='authentication')),
+    url(r'^auth/', include('authentication.urls', namespace='authentication')),
     url(r'^management/', include('management.urls', namespace='management')),
     url(r'^registercall/', include('registercall.urls', namespace='register_call')),
     url(r'^taskmanager/', include('task_manager.urls', namespace='task_manager')),
     url(r'^registerhelper/', include('register_helper.urls', namespace='register_helper')),
-    url(r'^ivr/', include('ivr.urls', namespace='ivr')),
+    url(r'^', include('ivr.urls', namespace='ivr')),
 ]

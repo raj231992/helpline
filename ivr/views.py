@@ -3,11 +3,17 @@ from django.views.generic import View
 from .models import IVR_Call
 from .options import Session
 from management.models import HelperCategory,HelpLine
-import kookoo
+import kookoo,requests,json
 
 # Create your views here.
 
 class IVR(View):
+    def post_data(self,url, data):
+        base_url = "http://safestreet.cse.iitb.ac.in:9000/"
+        authentication = ("raj", "r@j2331992")
+        headers = {'Content-type': 'application/json',}
+        r = requests.post(base_url + url, data=json.dumps(data), headers=headers, auth=authentication)
+
     def get(self,request):
         r = kookoo.Response()
         sid = request.GET.get("sid")
@@ -41,14 +47,20 @@ class IVR(View):
         if request.GET.get("event")=="GotDTMF" and session_next==Session.GET_OPTION:
             if len(request.GET.get("data"))!=0:
                 call.category_option = request.GET.get("data")
+                call.session_next = Session.CALL_EXIT
                 call.save()
+                data = {
+                    "client_number":call.caller_no,
+                    "helpline_number":call.helpline_no,
+                    "location":call.caller_location,
+                }
+                self.post_data("registercall/", data)
                 helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
-                r.addPlayText("Thank You for calling " + helpline.name + " Helpline")
+                r.addPlayText("Thank You for calling " + helpline.name + " Helpline.")
                 r.addHangup()
             else:
                 call.session_next = Session.DISPLAY_OPTION
                 call.save()
-        print(request)
         return HttpResponse(r)
 
 

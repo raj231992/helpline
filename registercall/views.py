@@ -16,27 +16,27 @@ class RegisterCall(APIView):
     """
     Register call used to handle incoming call requests
     """
-    def validate_input(self, request):
-        """
-        Incoming input validator
-        """
-        data = request.data
-
-        client_number = data.get('client_number');
-        helpline_number = data.get('helpline_number')
-
-
-        # Checking for required fields
-        if client_number is None or helpline_number is None:
-            return False
-
-        # Validating phone pattern
-        phone_pattern = r'^(\+91|0)?\d{10}$'
-        if re.match(phone_pattern, client_number) is not None and \
-           re.match(phone_pattern, helpline_number) is not None:
-            return data
-        else:
-            return False
+    # def validate_input(self, request):
+    #     """
+    #     Incoming input validator
+    #     """
+    #     data = request.data
+    #
+    #     client_number = data.get('client_number');
+    #     helpline_number = data.get('helpline_number')
+    #
+    #
+    #     # Checking for required fields
+    #     if client_number is None or helpline_number is None:
+    #         return False
+    #
+    #     # Validating phone pattern
+    #     # phone_pattern = r'^(\+91|0)?\d{10}$'
+    #     # if re.match(phone_pattern, client_number) is not None and \
+    #     #    re.match(phone_pattern, helpline_number) is not None:
+    #     #     return data
+    #     # else:
+    #     #     return False
 
 
     def register_call(self, data):
@@ -95,19 +95,17 @@ class RegisterCall(APIView):
         """
         Post request handler
         """
-        data = self.validate_input(request=request)
+        # data = self.validate_input(request=request)
 
-        if data:
-            state = self.register_call(data=data)
 
-            if state == CallRequestStatusOptions.CREATED:
-                return JsonResponse({"notification": "new_task_created"}, status=201)
-            elif state == CallRequestStatusOptions.MERGED:
-                return JsonResponse({"notification": "merged_with_pending_task"}, status=202)
-            elif state == CallRequestStatusOptions.INVALID_HELPLINE:
-                return JsonResponse({"notification": "invalid_helpline"}, status=400)
-            elif state == CallRequestStatusOptions.BLOCKED:
-                return JsonResponse({"notification": "client_blocked"}, status=406)
+        state = self.register_call(data=request.data)
 
-        else:
-            return JsonResponse({"notification": "bad_request"}, status=400)
+        if state == CallRequestStatusOptions.CREATED:
+            return JsonResponse({"notification": "new_task_created"}, status=201)
+        elif state == CallRequestStatusOptions.MERGED:
+            return JsonResponse({"notification": "merged_with_pending_task"}, status=202)
+        elif state == CallRequestStatusOptions.INVALID_HELPLINE:
+            return JsonResponse({"notification": "invalid_helpline"}, status=400)
+        elif state == CallRequestStatusOptions.BLOCKED:
+            return JsonResponse({"notification": "client_blocked"}, status=406)
+
