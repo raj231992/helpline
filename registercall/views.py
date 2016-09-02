@@ -10,33 +10,15 @@ from registercall.models import CallRequest, Client, HelpLine, Task
 from registercall.options import (CallRequestStatusOptions,
                                          TaskStatusOptions)
 from task_manager.helpers import AssignAction
-
+from management.models import HelperCategory
 
 class RegisterCall(APIView):
     """
     Register call used to handle incoming call requests
     """
-    # def validate_input(self, request):
-    #     """
-    #     Incoming input validator
-    #     """
-    #     data = request.data
-    #
-    #     client_number = data.get('client_number');
-    #     helpline_number = data.get('helpline_number')
-    #
-    #
-    #     # Checking for required fields
-    #     if client_number is None or helpline_number is None:
-    #         return False
-    #
-    #     # Validating phone pattern
-    #     # phone_pattern = r'^(\+91|0)?\d{10}$'
-    #     # if re.match(phone_pattern, client_number) is not None and \
-    #     #    re.match(phone_pattern, helpline_number) is not None:
-    #     #     return data
-    #     # else:
-    #     #     return False
+    def assign_helper(self,action):
+        pass
+
 
 
     def register_call(self, data):
@@ -53,6 +35,7 @@ class RegisterCall(APIView):
         client_number = data.get('client_number');
         helpline_number = data.get('helpline_number')
         location = data.get('location')
+        category = data.get('category')
 
         # Trying to get client instance and if doesn't exist, create one
         try:
@@ -65,9 +48,12 @@ class RegisterCall(APIView):
             client = Client.objects.create(client_number=client_number,location=location)
 
         # To check if task already pending for client
+        hc = HelperCategory.objects.all()
+        hc = hc[int(category)]
         client_has_pending_tasks = Task.objects.filter(
             status=TaskStatusOptions.PENDING,
-            call_request__client=client
+            call_request__client=client,
+            category = hc
         ).exists()
 
         if client_has_pending_tasks:
@@ -85,9 +71,12 @@ class RegisterCall(APIView):
 
         # Creating new task if client isn't blocked and task not pending for client
         if req_status == CallRequestStatusOptions.CREATED:
-            new_task = Task.objects.create(call_request=call_request)
+            hc = HelperCategory.objects.all()
+            hc = hc[int(category)]
+            new_task = Task.objects.create(call_request=call_request,category=hc)
             action = AssignAction()
             action.assign_action(new_task)
+
 
         return req_status
 
@@ -95,8 +84,6 @@ class RegisterCall(APIView):
         """
         Post request handler
         """
-        # data = self.validate_input(request=request)
-
 
         state = self.register_call(data=request.data)
 

@@ -53,6 +53,7 @@ class IVR(View):
                     "client_number":call.caller_no,
                     "helpline_number":call.helpline_no,
                     "location":call.caller_location,
+                    "category":call.category_option
                 }
                 self.post_data("registercall/", data)
                 helpline = HelpLine.objects.get(helpline_number=call.helpline_no)

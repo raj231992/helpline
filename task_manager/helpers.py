@@ -35,7 +35,7 @@ class AssignAction():
         }
         helper_methods.assign_helpers(
             action=current_action,
-            category="General",
+            category=task.category,
             data=data,
             no_of_helpers=2,
         )
@@ -234,7 +234,7 @@ class HelperMethods():
                 Assign.objects.create(helper=helper, action=action)
 
         # Send new task notifications to clients
-        self.send_new_task_notification(action=action, data=data)
+        #self.send_new_task_notification(action=action, data=data)
 
     def send_new_task_notification(self, action, data):
         """
