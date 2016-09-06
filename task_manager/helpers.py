@@ -217,7 +217,6 @@ class HelperMethods():
         Sends task notifications to respective helpers for specified action
         """
 
-        gcm_canonical_ids = []
         assignments = Assign.objects.filter(
             action=action,
             status=AssignStatusOptions.PENDING,

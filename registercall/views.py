@@ -32,7 +32,7 @@ class RegisterCall(APIView):
         # CREATED and might update its state to BLOCKED/MERGED before inserting into the model
         req_status = CallRequestStatusOptions.CREATED
 
-        client_number = data.get('client_number');
+        client_number = data.get('client_number')
         helpline_number = data.get('helpline_number')
         location = data.get('location')
         category = data.get('category')
@@ -72,7 +72,7 @@ class RegisterCall(APIView):
         # Creating new task if client isn't blocked and task not pending for client
         if req_status == CallRequestStatusOptions.CREATED:
             hc = HelperCategory.objects.all()
-            hc = hc[int(category)]
+            hc = hc[int(category)-1]
             new_task = Task.objects.create(call_request=call_request,category=hc)
             action = AssignAction()
             action.assign_action(new_task)
