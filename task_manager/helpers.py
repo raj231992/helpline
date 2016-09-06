@@ -210,7 +210,7 @@ class HelperMethods():
                 Assign.objects.create(helper=helper, action=action)
 
         # Send new task notifications to clients
-        #self.send_new_task_notification(action=action, data=data)
+        self.send_new_task_notification(action=action, data=data)
 
     def send_new_task_notification(self, action, data):
         """
