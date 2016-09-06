@@ -11,6 +11,7 @@ from registercall.options import TaskStatusOptions
 from task_manager.models import Action, Assign, QandA
 from task_manager.options import (ActionStatusOptions, ActionTypeOptions,
                                   AssignStatusOptions)
+from management.notifications import push_notification
 
 
 class AssignAction():
@@ -27,12 +28,7 @@ class AssignAction():
             task=task,
             action_type=ActionTypeOptions.PRIMARY,
         )
-        data = {
-            "notification": "new_task_notification",
-            "client_number": task.call_request.client.client_number,
-            "task_id": task.pk,
-            "task_type": "Primary",
-        }
+        data = "New Task Has Been Assigned"
         helper_methods.assign_helpers(
             action=current_action,
             category=task.category,
@@ -52,13 +48,7 @@ class AssignAction():
             task=task,
             action_type=ActionTypeOptions.SPECIALIST,
         )
-        data = {
-            "notification": "new_task_notification",
-            "client_number": task.call_request.client.client_number,
-            "task_id": task.pk,
-            "task_type": "Specialist",
-            "question": qna.question,
-        }
+        data = data = "New Task Has Been Assigned"
         helper_methods.assign_helpers(
             action=current_action,
             category=task.category,
@@ -76,12 +66,7 @@ class AssignAction():
             task=task,
             action_type=ActionTypeOptions.FEEDBACK,
         )
-        data = {
-            "notification": "new_task_notification",
-            "client_number": task.call_request.client.client_number,
-            "task_id": task.pk,
-            "task_type": "Feedback",
-        }
+        data = "New Feedback Task Has Been Assigned"
         helper_methods.assign_helpers(
             action=current_action,
             category="General",
@@ -102,16 +87,7 @@ class AssignAction():
             task=task,
             action_type=ActionTypeOptions.SPECIALIST_CONFIRM,
         )
-        data = {
-            "notification": "new_task_notification",
-            "client_number": task.call_request.client.client_number,
-            "task_id": task.pk,
-            "task_type": "Specialist Confirm",
-            "question": qna.question,
-            "answer": qna.answer,
-            "feedback_question": qna.feedback_question,
-            "feedback_answer": qna.feedback_answer,
-        }
+        data = "New Confirm Task Has Been Assigned"
         helper_methods.assign_helpers(
             action=current_action,
             category=task.category,
@@ -248,31 +224,12 @@ class HelperMethods():
         )
 
         for assignment in assignments:
-            # Appending all GCM ids of helpers
-            gcm_canonical_ids.append(assignment.helper.gcm_canonical_id)
+            # Send notification to all GCM ids of helpers
+            push_notification(assignment.helper.gcm_canonical_id,data)
 
-        # If assigned helper is more than 1
-        # else action will complete timeout at later instant using scheduled jobs to reassign
-        if len(gcm_canonical_ids) > 0:
-            self.send_gcm_message(gcm_canonical_ids, data)
 
-    def send_gcm_message(self, gcm_canonical_id, data):
-        """
-        Sends GCM messages to gcm id's passed with the message as data
-        """
-        content_type = "application/json"
-        url = "https://android.googleapis.com/gcm/send"
-        server_authorization_token = "AIzaSyAqS67L46T5MlJLI2Ab_Saa6rg1iRkRWlY"
 
-        headers = {
-            'Authorization': 'key='+server_authorization_token,
-            'Content-Type': content_type,
-        }
-        requests.post(
-            url,
-            data=json.dumps({'data': data, 'registration_ids': gcm_canonical_id}),
-            headers=headers,
-        )
+
 
     def terminate_and_assign_new_action(self, action):
         """
