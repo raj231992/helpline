@@ -2,12 +2,13 @@
 Register Call Views
 """
 import hashlib
-from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from .models import Helper
 from django.shortcuts import get_object_or_404
 from management.models import HelpLine, HelperCategory
+from django.contrib.auth.models import User
+from rest_framework.response import Response
 
 from .serializers import HelperSerializer
 
@@ -73,16 +74,19 @@ class RegisterHelper(APIView):
         username = data.get("username")
         user = User.objects.filter(username=username)
         if user:
-            return JsonResponse({"notification": "user already exists"}, status=200)
+            return Response({"notification": "user already exists"}, status=200)
         if serializer.is_valid():
 
             # If new helper registered successfully
             if self.register_call(data=data):
-                return JsonResponse({"notification": "success"}, status=200)
+                return Response({"notification": "success"}, status=200)
             # If sent category is invalid
             else:
-                return JsonResponse({"notification": "invalid_category"}, status=200)
+                return Response({"notification": "invalid_category"}, status=200)
 
         # If invalid data sent
         else:
-            return JsonResponse({"notification": "failed"}, status=200)
+            return Response({"notification": "failed"}, status=200)
+
+
+
