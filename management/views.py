@@ -6,6 +6,7 @@ from register_helper.models import Helper
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from .serializers import HelperCategorySerializer,HelplineSerializer
+import json
 # Create your views here.
 
 class getHelplines(APIView):
@@ -41,8 +42,27 @@ class getHelperProfile(APIView):
 
 class setHelperProfile(APIView):
     def post(self,request):
-        print request.data
-        return Response(request.data,status=200)
+        username = request.data.get("username")
+        first_name = request.data.get("first_name")
+        last_name = request.data.get("last_name")
+        phone_no = request.data.get("phone_no")
+        email = request.data.get("email")
+        categories = json.loads(request.data.get("categories"))
+        user = get_object_or_404(User, username=username)
+        helper = get_object_or_404(Helper, user=user)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        helper.helper_number = phone_no
+        helpercategories = HelperCategory.objects.all()
+        for category in helpercategories:
+            if categories[0].get(category.name)=="True":
+                helper.category.add(HelperCategory.objects.get(name=category.name))
+            else:
+                helper.category.remove(HelperCategory.objects.get(name=category.name))
+        helper.save()
+        user.save()
+        return Response("successful",status=200)
 
 
 
