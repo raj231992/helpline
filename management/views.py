@@ -56,13 +56,13 @@ class setHelperProfile(APIView):
         helper.helper_number = phone_no
         helpercategories = HelperCategory.objects.all()
         for category in helpercategories:
-            if categories[0].get(category.name)=="True":
+            if categories.get(category.name)=="True":
                 helper.category.add(HelperCategory.objects.get(name=category.name))
             else:
                 helper.category.remove(HelperCategory.objects.get(name=category.name))
         helper.save()
         user.save()
-        return Response("successful",status=200)
+        return Response({"notification":"successful"},status=200)
 
 
 
