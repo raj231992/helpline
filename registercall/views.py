@@ -49,7 +49,7 @@ class RegisterCall(APIView):
 
         # To check if task already pending for client
         hc = HelperCategory.objects.all()
-        hc = hc[int(category)]
+        hc = hc[int(category)-1]
         client_has_pending_tasks = Task.objects.filter(
             status=TaskStatusOptions.PENDING,
             call_request__client=client,
