@@ -212,6 +212,52 @@ class HelperMethods():
         # Send new task notifications to clients
         self.send_new_task_notification(action=action, data=data)
 
+    def reassign_helpers(self, action, category, data, no_of_helpers,previous_helpers):
+        """
+        Used to assign helpers to a particular action
+            param action: Action to which we need to assign helpers
+            param category: Category of helpers
+            param data: Data Message to be sent to helpers
+            param no_of_helpers: The number of helpers we need to assign
+        """
+
+        free_helpers_assigned = 0
+
+        # Initially tries to assign free helpers
+        helpers = Helper.objects.exclude(id__in=previous_helpers)\
+                      .filter(category__name=category) \
+                      .exclude(assigned_to__status=AssignStatusOptions.PENDING) \
+                      .exclude(assigned_to__status=AssignStatusOptions.ACCEPTED) \
+                      .order_by('last_assigned')[:no_of_helpers]
+
+        for helper in helpers:
+            # Used to prioritize helpers for later selection
+            helper.last_assigned = timezone.localtime(timezone.now())
+            helper.save()
+
+            # Create new assign object for selected helper
+            Assign.objects.create(helper=helper, action=action)
+
+            # Increment the count for helpers assigned
+            free_helpers_assigned += 1
+
+        # If it couldn't assign required free helpers it assigns tasks to existing busy helpers
+        if no_of_helpers != free_helpers_assigned:
+            helpers = Helper.objects.exclude(id__in=previous_helpers) \
+                          .filter(category__name=category) \
+                          .order_by('last_assigned')[:(no_of_helpers - free_helpers_assigned)]
+
+            for helper in helpers:
+                # Used to prioritize helpers for later selection
+                helper.last_assigned = timezone.localtime(timezone.now())
+                helper.save()
+
+                # Create new assign object for selected helper
+                Assign.objects.create(helper=helper, action=action)
+
+        # Send new task notifications to clients
+        self.send_new_task_notification(action=action, data=data)
+
     def send_new_task_notification(self, action, data):
         """
         Sends task notifications to respective helpers for specified action
