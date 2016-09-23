@@ -7,10 +7,11 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 from .serializers import HelperCategorySerializer,HelplineSerializer
 import json
-from task_manager.models import Action,Assign
-from task_manager.options import AssignStatusOptions
+from task_manager.models import Action,Assign,QandA
+from task_manager.options import AssignStatusOptions,ActionStatusOptions
 from django.utils import timezone
 from registercall.models import CallRequest,Task
+from registercall.options import TaskStatusOptions
 from task_manager.helpers import HelperMethods
 # Create your views here.
 
@@ -144,6 +145,8 @@ class HelperAccept(APIView):
         if task_status=="accept":
             assign.status = AssignStatusOptions.ACCEPTED
             assign.save()
+            action.status = ActionStatusOptions.ASSIGNED
+            action.save()
             assign = Assign.objects.filter(action=action).exclude(status=AssignStatusOptions.ACCEPTED)
             assign.delete()
             return Response({"notification":"successful"},status=200)
@@ -160,6 +163,30 @@ class HelperAccept(APIView):
                 data = "New Task Has Been Assigned"
                 helpermethod.reassign_helpers(action,task.category,data,2,rejected_helpers)
             return Response({"notification":"successful"}, status=200)
+
+class getQandA(APIView):
+    def post(self, request):
+        question = request.data.get("question")
+        answer = request.data.get("answer")
+        task_id = request.data.get("task_id")
+        task = Task.objects.get(id=task_id)
+        qanda = QandA(task=task,question=question,answer=answer)
+        qanda.save()
+        return Response({"notification": "successful"}, status=200)
+
+class TaskComplete(APIView):
+    def post(self,request):
+        task_id = request.data.get("task_id")
+        task = Task.objects.get(id=task_id)
+        action = Action.objects.get(task=task)
+        assign = Assign.objects.get(action=action)
+        task.status = TaskStatusOptions.COMPLETED
+        task.save()
+        action.status = ActionStatusOptions.COMPLETED
+        action.save()
+        assign.status = AssignStatusOptions.COMPLETED
+        assign.save()
+        return Response({"notification": "successful"}, status=200)
 
 
 
