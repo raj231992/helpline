@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views.generic import View
-from .models import IVR_Call
+from .models import IVR_Call,Call_Forward
 from .options import Session
 from management.models import HelperCategory,HelpLine
 import kookoo,requests,json
@@ -26,9 +26,14 @@ class IVR(View):
             caller_no = request.GET.get("cid")
             helpline_no = request.GET.get("called_number")
             caller_location = request.GET.get("circle")
-            session_next = Session.WELCOME
-            call = IVR_Call(sid=sid,caller_no=caller_no,helpline_no=helpline_no,caller_location=caller_location,session_next=session_next)
-            call.save()
+            call_forward = Call_Forward.objects.filter(helper_no=caller_no)
+            if call_forward:
+                r.Dial(phoneno=call_forward[0].caller_no)
+                session_next = Session.CALL_FORWARD
+            else:
+                session_next = Session.WELCOME
+                call = IVR_Call(sid=sid,caller_no=caller_no,helpline_no=helpline_no,caller_location=caller_location,session_next=session_next)
+                call.save()
         if session_next==Session.WELCOME:
             helpline = HelpLine.objects.get(helpline_number = helpline_no)
             r.addPlayText("Welcome to "+helpline.name+" Helpline")
@@ -62,6 +67,11 @@ class IVR(View):
             else:
                 call.session_next = Session.DISPLAY_OPTION
                 call.save()
+        if request.GET.get("event")=="Dial" and session_next==Session.CALL_FORWARD:
+            if request.GET.get("status")=="not_answered":
+                r.addHangup()
+            else:
+                r.addHangup()
         return HttpResponse(r)
 
 

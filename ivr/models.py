@@ -15,3 +15,10 @@ class IVR_Call(models.Model):
 
     def __unicode__(self):
         return str(self.caller_no)
+
+class Call_Forward(models.Model):
+    helper_no = models.CharField(max_length=15)
+    caller_no = models.CharField(max_length=15)
+
+    def __unicode__(self):
+        return str(self.helper_no)
