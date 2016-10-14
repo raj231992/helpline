@@ -28,8 +28,11 @@ class IVR(View):
             caller_location = request.GET.get("circle")
             call_forward = Call_Forward.objects.filter(helper_no=caller_no)
             if call_forward:
-                r.Dial(phoneno=call_forward[0].caller_no)
                 session_next = Session.CALL_FORWARD
+                call = IVR_Call(sid=sid, caller_no=caller_no, helpline_no=helpline_no, caller_location=caller_location,
+                                session_next=session_next)
+                call.save()
+                r.addDial(phoneno=call_forward[0].caller_no)
             else:
                 session_next = Session.WELCOME
                 call = IVR_Call(sid=sid,caller_no=caller_no,helpline_no=helpline_no,caller_location=caller_location,session_next=session_next)
