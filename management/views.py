@@ -13,6 +13,7 @@ from django.utils import timezone
 from registercall.models import CallRequest,Task
 from registercall.options import TaskStatusOptions
 from task_manager.helpers import HelperMethods
+from ivr.models import Call_Forward
 # Create your views here.
 
 class getHelplines(APIView):
@@ -186,6 +187,18 @@ class TaskComplete(APIView):
         action.save()
         assign.status = AssignStatusOptions.COMPLETED
         assign.save()
+        return Response({"notification": "successful"}, status=200)
+
+class CallForward(APIView):
+    def post(self,request):
+        task_id = request.data.get("task_id")
+        task = Task.objects.get(id=task_id)
+        action = Action.objects.get(task=task)
+        assign = Assign.objects.get(action=action)
+        helper_no = assign.helper.helper_number
+        client_no = task.call_request.client.client_number
+        call_forward = Call_Forward(helper_no=helper_no,caller_no=client_no)
+        call_forward.save()
         return Response({"notification": "successful"}, status=200)
 
 

@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import getHelplines,getHelperProfile,getHelplineCategories,setHelperProfile,getHelperTasks,HelperAccept,getHelplineNumber,getQandA,TaskComplete
+from .views import getHelplines,getHelperProfile,getHelplineCategories,setHelperProfile,getHelperTasks,HelperAccept,getHelplineNumber,getQandA,TaskComplete,CallForward
 
 urlpatterns = [
     url(r'^gethelplines/$', getHelplines.as_view(), name='getHelplines'),
@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^HelperAccept/$', HelperAccept.as_view(), name='HelperAccept'),
     url(r'^getQandA/$', getQandA.as_view(), name='getQandA'),
     url(r'^TaskComplete/$', TaskComplete.as_view(), name='TaskComplete'),
+    url(r'^CallForward/$', CallForward.as_view(), name='CallForward'),
 
 
 ]

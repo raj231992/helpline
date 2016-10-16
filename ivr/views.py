@@ -72,8 +72,12 @@ class IVR(View):
                 call.save()
         if request.GET.get("event")=="Dial" and session_next==Session.CALL_FORWARD:
             if request.GET.get("status")=="not_answered":
+                call_forward = Call_Forward.objects.get(helper_no=caller_no)
+                call_forward.delete()
                 r.addHangup()
             else:
+                call_forward = Call_Forward.objects.get(helper_no=caller_no)
+                call_forward.delete()
                 r.addHangup()
         return HttpResponse(r)
 
