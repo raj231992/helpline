@@ -65,12 +65,13 @@ class IVR(View):
                 }
                 self.post_data("registercall/", data)
                 helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
-                r.addPlayText("Thank You for calling " + helpline.name + " Helpline.")
+                r.addPlayText("We will call back shortly. Thank You for calling " + helpline.name + " Helpline.")
                 r.addHangup()
             else:
                 call.session_next = Session.DISPLAY_OPTION
                 call.save()
         if request.GET.get("event")=="Dial" and session_next==Session.CALL_FORWARD:
+            caller_no = request.GET.get("cid")
             if request.GET.get("status")=="not_answered":
                 call_forward = Call_Forward.objects.get(helper_no=caller_no)
                 call_forward.delete()
