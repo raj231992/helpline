@@ -40,7 +40,7 @@ class IVR(View):
         if session_next==Session.WELCOME:
             helpline = HelpLine.objects.get(helpline_number = helpline_no)
             # r.addPlayText("Welcome to "+helpline.name+" Helpline")
-            r.addPlayAudio("http://safestreet.cse.iitb.ac.in:9000/media/ivr_audio/welcome.mp3")
+            r.addPlayAudio(url="http://safestreet.cse.iitb.ac.in/helpline/ivr_audio/welcome.mp3")
             call.session_next = Session.DISPLAY_OPTION
             call.save()
         if session_next==Session.DISPLAY_OPTION:
