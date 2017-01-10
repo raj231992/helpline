@@ -11,6 +11,7 @@ class IVR_Call(models.Model):
     caller_no = models.CharField(max_length=15)
     caller_location = models.CharField(max_length=256)
     helpline_no = models.CharField(max_length=15)
+    language_option = models.CharField(max_length=2)
     category_option = models.CharField(max_length=2)
     session_next = models.CharField(max_length=256,choices=Session.SESSION_CHOICES)
 
@@ -25,8 +26,8 @@ class Call_Forward(models.Model):
         return str(self.helper_no)
 
 class Language(models.Model):
-    helpline = models.ForeignKey(HelpLine,on_delete=models.CASCADE)
     language = models.CharField(max_length=20)
+    helpline = models.ForeignKey(HelpLine, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return str(self.language)
@@ -42,7 +43,6 @@ class IVR_Audio(models.Model):
         return str(self.category)+" "+str(self.language)
 
 class Misc_Category(models.Model):
-    helpline = models.ForeignKey(HelpLine,on_delete=models.CASCADE)
     category = models.CharField(max_length=20)
 
     def __unicode__(self):
@@ -51,7 +51,8 @@ class Misc_Category(models.Model):
 class Misc_Audio(models.Model):
     helpline = models.ForeignKey(HelpLine,on_delete=models.CASCADE)
     category = models.ForeignKey(Misc_Category,on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
     audio = models.FileField(upload_to='ivr_audio/')
 
     def __unicode__(self):
-        return str(self.category)
+        return str(self.category)+" "+str(self.language)

@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views.generic import View
-from .models import IVR_Call,Call_Forward
+from .models import IVR_Call,Call_Forward,Misc_Audio,Misc_Category,IVR_Audio,Language
 from .options import Session
 from management.models import HelperCategory,HelpLine
 import kookoo,requests,json
@@ -15,6 +15,7 @@ class IVR(View):
         r = requests.post(base_url + url, data=json.dumps(data), headers=headers, auth=authentication)
 
     def get(self,request):
+        audio_url = "http://safestreet.cse.iitb.ac.in/helpline"
         r = kookoo.Response()
         sid = request.GET.get("sid")
         try:
@@ -22,6 +23,7 @@ class IVR(View):
             session_next = int(call.session_next)
         except:
             pass
+
         if request.GET.get("event")=="NewCall":
             caller_no = request.GET.get("cid")
             helpline_no = request.GET.get("called_number")
@@ -34,25 +36,50 @@ class IVR(View):
                 call.save()
                 r.addDial(phoneno=call_forward[0].caller_no)
             else:
-                session_next = Session.WELCOME
+                session_next = Session.DISPLAY_LANGUAGE
                 call = IVR_Call(sid=sid,caller_no=caller_no,helpline_no=helpline_no,caller_location=caller_location,session_next=session_next)
                 call.save()
+
+        if session_next == Session.DISPLAY_LANGUAGE:
+            g = r.append(kookoo.CollectDtmf(maxDigits=1, timeout=5000))
+            helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
+            audio_cat = Misc_Category.objects.get(category="Language")
+            audio_objs = Misc_Audio.objects.filter(helpline=helpline,category=audio_cat)
+            for audio_obj in audio_objs:
+                print audio_url+audio_obj.audio.name
+                g.append(kookoo.PlayAudio(url=audio_url+audio_obj.audio.name))
+            call.session_next = Session.GET_LANGUAGE
+            call.save()
+
+        if request.GET.get("event") == "GotDTMF" and session_next == Session.GET_LANGUAGE:
+            if len(request.GET.get("data")) != 0:
+                call.language_option = request.GET.get("data")
+                call.session_next = Session.WELCOME
+                call.save()
+            else:
+                call.session_next = Session.DISPLAY_LANGUAGE
+                call.save()
+
         if session_next==Session.WELCOME:
-            helpline = HelpLine.objects.get(helpline_number = helpline_no)
-            # r.addPlayText("Welcome to "+helpline.name+" Helpline")
-            r.addPlayAudio(url="http://safestreet.cse.iitb.ac.in/helpline/ivr_audio/welcome.mp3")
+            helpline = HelpLine.objects.get(helpline_number = call.helpline_no)
+            language = Language.objects.filter(helpline=helpline)[int(call.language_option)-1]
+            audio_cat = Misc_Category.objects.get(category="Welcome")
+            audio_obj = Misc_Audio.objects.get(helpline=helpline,category=audio_cat,language=language)
+            r.addPlayAudio(url=audio_url+audio_obj.audio.name)
             call.session_next = Session.DISPLAY_OPTION
             call.save()
+
         if session_next==Session.DISPLAY_OPTION:
             g = r.append(kookoo.CollectDtmf(maxDigits=1,timeout=5000))
             helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
-            help_cats = HelperCategory.objects.filter(helpline=helpline)
-            idx=1;
-            for help_cat in help_cats:
-                g.append(kookoo.PlayText("Press "+str(idx)+" for"+help_cat.name))
-                idx+=1
+            language = Language.objects.filter(helpline=helpline)[int(call.language_option) - 1]
+            audio_obj = IVR_Audio.objects.get(helpline=helpline, language=language)
+            for audio_obj in audio_objs:
+                print audio_url+audio_obj.audio.name
+                g.append(kookoo.PlayAudio(url=audio_url+audio_obj.audio.name))
             call.session_next = Session.GET_OPTION
             call.save()
+
         if request.GET.get("event")=="GotDTMF" and session_next==Session.GET_OPTION:
             if len(request.GET.get("data"))!=0:
                 call.category_option = request.GET.get("data")
@@ -65,12 +92,19 @@ class IVR(View):
                     "category":call.category_option
                 }
                 self.post_data("registercall/", data)
-                helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
-                r.addPlayText("We will call back shortly. Thank You for calling " + helpline.name + " Helpline.")
-                r.addHangup()
+
             else:
                 call.session_next = Session.DISPLAY_OPTION
                 call.save()
+
+        if session_next==Session.CALL_EXIT:
+            helpline = HelpLine.objects.get(helpline_number = call.helpline_no)
+            language = Language.objects.filter(helpline=helpline)[int(call.language_option)-1]
+            audio_cat = Misc_Category.objects.get(category="Exit")
+            audio_obj = Misc_Audio.objects.get(helpline=helpline,category=audio_cat,language=language)
+            r.addPlayAudio(url=audio_url+audio_obj.audio.name)
+            r.addHangup()
+
         if request.GET.get("event")=="Dial" and session_next==Session.CALL_FORWARD:
             caller_no = request.GET.get("cid")
             if request.GET.get("status")=="not_answered":
