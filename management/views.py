@@ -35,7 +35,7 @@ class getHelplineCategories(APIView):
         user = get_object_or_404(User, username=username)
         helper = get_object_or_404(Helper, user=user)
         helpline = helper.helpline
-        helpline_categories = HelperCategory.objects.filter(helpline=helpline)
+        helpline_categories = HelperCategory.objects.filter(helpline=helpline).exclude(name='Repeat')
         helpline_categories = HelperCategorySerializer(helpline_categories,many=True)
         return Response({"categories":helpline_categories.data},status=200)
 
