@@ -46,7 +46,6 @@ class IVR(View):
             audio_cat = Misc_Category.objects.get(category="Language")
             audio_objs = Misc_Audio.objects.filter(helpline=helpline,category=audio_cat)
             for audio_obj in audio_objs:
-                print audio_url+audio_obj.audio.name
                 g.append(kookoo.PlayAudio(url=audio_url+audio_obj.audio.name))
             call.session_next = Session.GET_LANGUAGE
             call.save()
@@ -73,9 +72,8 @@ class IVR(View):
             g = r.append(kookoo.CollectDtmf(maxDigits=1,timeout=5000))
             helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
             language = Language.objects.filter(helpline=helpline)[int(call.language_option) - 1]
-            audio_obj = IVR_Audio.objects.get(helpline=helpline, language=language)
+            audio_objs = IVR_Audio.objects.filter(helpline=helpline, language=language)
             for audio_obj in audio_objs:
-                print audio_url+audio_obj.audio.name
                 g.append(kookoo.PlayAudio(url=audio_url+audio_obj.audio.name))
             call.session_next = Session.GET_OPTION
             call.save()
@@ -83,18 +81,52 @@ class IVR(View):
         if request.GET.get("event")=="GotDTMF" and session_next==Session.GET_OPTION:
             if len(request.GET.get("data"))!=0:
                 call.category_option = request.GET.get("data")
-                call.session_next = Session.CALL_EXIT
-                call.save()
-                data = {
-                    "client_number":call.caller_no,
-                    "helpline_number":call.helpline_no,
-                    "location":call.caller_location,
-                    "category":call.category_option
-                }
-                self.post_data("registercall/", data)
+                helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
+                language = Language.objects.filter(helpline=helpline)[int(call.language_option) - 1]
+                tot_opts = str(len(IVR_Audio.objects.filter(language=language)))
+                print tot_opts,call.category_option
+                if call.category_option== tot_opts:
+                    call.session_next = Session.DISPLAY_OPTION
+                    call.save()
+                else:
+                    call.session_next = Session.DISPLAY_TERMS
+                    call.save()
 
             else:
                 call.session_next = Session.DISPLAY_OPTION
+                call.save()
+
+        if session_next == Session.DISPLAY_TERMS:
+            g = r.append(kookoo.CollectDtmf(maxDigits=1, timeout=5000))
+            helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
+            language = Language.objects.filter(helpline=helpline)[int(call.language_option) - 1]
+            audio_cat = Misc_Category.objects.get(category="Terms")
+            audio_obj = Misc_Audio.objects.get(helpline=helpline,category=audio_cat,language=language)
+            g.append(kookoo.PlayAudio(url=audio_url+audio_obj.audio.name))
+            call.session_next = Session.GET_TERMS
+            call.save()
+
+        if request.GET.get("event") == "GotDTMF" and session_next == Session.GET_TERMS:
+            if len(request.GET.get("data")) != 0:
+                terms_option = request.GET.get("data")
+                if terms_option=='1':
+                    call.session_next = Session.CALL_EXIT
+                    call.save()
+                    data = {
+                        "client_number": call.caller_no,
+                        "helpline_number": call.helpline_no,
+                        "location": call.caller_location,
+                        "category": call.category_option
+                    }
+                    self.post_data("registercall/", data)
+                elif terms_option=='2':
+                    r.addHangup()
+                else:
+                    call.session_next = Session.DISPLAY_TERMS
+                    call.save()
+
+            else:
+                call.session_next = Session.DISPLAY_TERMS
                 call.save()
 
         if session_next==Session.CALL_EXIT:
