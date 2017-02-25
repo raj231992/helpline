@@ -1,0 +1,134 @@
+{% extends 'sidebar.html' %}
+
+{% load staticfiles %}
+
+{% block cssLinks %}
+<link href="{% static " vendors/iCheck/skins/flat/green.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block pageContent %}
+<!-- page content -->
+
+<div class="right_col" role="main">
+    <div class="">
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_content">
+                        <div class="col-md-9" style="padding-right: 25px;">
+                            <!-- page content -->
+                            <div>
+
+                                <div class="">
+                                    <div class="page-title">
+                                        <div class="title_left "><h3>Tasks</h3></div>
+
+                                    </div>
+                                    <div class="clearfix"></div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="x_panel">
+                                                <div class="x_content">
+                                                    <!-- start project list -->
+                                                    <table class="table table-striped projects">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">Task ID</th>
+                                                            <th class="text-center">Category</th>
+                                                            <th class="text-center">Created</th>
+                                                            <th class="text-center">Helper</th>
+                                                            <th class="text-center">Status</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for assign in assigns %}
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                {{ assign.action.task }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ assign.action.task.category }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ assign.action.task.created | date:"d.m.Y" }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ assign.helper }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {% ifequal  assign.action.task.status 1 %}
+                                                                    <div class="text-danger">pending</div>
+                                                                {% endifequal %}
+                                                                {% ifequal  assign.action.task.status 2 %}
+                                                                    <div class="text-success">completed</div>
+                                                                {% endifequal %}
+                                                                {% ifequal  assign.action.task.status 3 %}
+                                                                    <div class="text-danger">pending</div>
+                                                                {% endifequal %}
+                                                            </td>
+
+                                                        </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                    <!-- end project list -->
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /page content -->
+                        </div>
+                        <div class="col-md-3">
+                            <div class="">
+                                    <div class="page-title">
+                                        <div class="title_left "></div>
+
+                                    </div>
+                                    <div class="clearfix"></div>
+            <div class="col-md-6">
+                <div class="text-center tile-stats">
+                    <div class="count text-muted">{{completed}}</div>
+                    <h3><span class="text-success"><b>Completed</b></span></h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center tile-stats">
+                    <div class="count text-muted">{{pending}}</div>
+                    <h3><span class="text-danger"><b>Pending</b></span></h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center tile-stats">
+                    <div class="count text-muted">{{rejected}}</div>
+                    <h3><span class="text-danger"><b>Rejected</b></span></h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center tile-stats">
+                    <div class="count text-muted">{{total}}</div>
+                    <h3><span class="text-primary"><b>Total</b></span></h3>
+                </div>
+            </div>
+            </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+
+{% endblock %}
+
+{% block jsLinks %}
+
+
+{% endblock %}
+

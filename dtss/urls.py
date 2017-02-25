@@ -21,6 +21,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include('authentication.urls', namespace='authentication')),
+    url(r'^web_auth/', include('web_auth.urls', namespace='web_auth')),
+    url(r'^dashboard/', include('dashboard.urls', namespace='dashboard')),
     url(r'^management/', include('management.urls', namespace='management')),
     url(r'^registercall/', include('registercall.urls', namespace='register_call')),
     url(r'^taskmanager/', include('task_manager.urls', namespace='task_manager')),
