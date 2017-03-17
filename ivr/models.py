@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from .options import Session
 from management.models import HelpLine,HelperCategory
+from registercall.models import Task
 
 # Create your models here.
 
@@ -56,3 +57,30 @@ class Misc_Audio(models.Model):
 
     def __unicode__(self):
         return str(self.category)+" "+str(self.language)
+
+  # FEEDBACK SYSTEM ###
+
+class FeedbackType(models.Model):
+    helpline = models.ForeignKey(HelpLine, on_delete=models.CASCADE)
+    question = models.CharField(max_length=100)
+    audio = models.FileField(upload_to='ivr_audio/')
+
+    def __unicode__(self):
+        return str(self.question)
+
+
+class FeedbackResponse(models.Model):
+    feedbackType = models.ForeignKey(FeedbackType, on_delete=models.CASCADE)
+    response = models.IntegerField()
+
+    def __unicode__(self):
+        return str(self.feedbackType.question)
+
+class Feedback(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    feedbackresponses = models.ManyToManyField(FeedbackResponse)
+    # current_question = models.ForeignKey(FeedbackResponse, on_delete=models.CASCADE)
+    current_question = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return str(self.id)

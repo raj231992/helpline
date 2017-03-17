@@ -157,5 +157,29 @@ class Feedback(View):
         return HttpResponse(r)
 
 
+class Feedbackold(View):
+    def get(self,request):
+        pass
+        # audio_url = "http://safestreet.cse.iitb.ac.in/helpline"
+        # r = kookoo.Response()
+        # try:
+        #     session_next = int(call.session_next)
+        # except:
+        #     pass
+        #
+        # if request.GET.get("event") == "NewCall":
+        #     caller_no = request.GET.get("cid")
+        #
+        #
+        # r = kookoo.Response()
+        # r.addPlayText("Hello World")
+        #
+        # audio_objs = FeedbackType.objects.filter(helpline=helpline, category=audio_cat)
+        # for audio_obj in audio_objs:
+        #     g.append(kookoo.PlayAudio(url=audio_url + audio_obj.audio.name))
+        # r.addHangup()
+        # return HttpResponse(r)
+
+
 
 

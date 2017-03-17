@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import IVR_Call,Call_Forward,Language,IVR_Audio,Misc_Audio,Misc_Category
+from .models import IVR_Call,Call_Forward,Language,IVR_Audio,Misc_Audio,Misc_Category,Feedback,FeedbackType,FeedbackResponse
 
 # Register your models here.
 
@@ -15,3 +15,6 @@ admin.site.register(Language)
 admin.site.register(IVR_Audio)
 admin.site.register(Misc_Audio)
 admin.site.register(Misc_Category)
+admin.site.register(Feedback)
+admin.site.register(FeedbackType)
+admin.site.register(FeedbackResponse)
