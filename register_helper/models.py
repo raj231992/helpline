@@ -22,6 +22,7 @@ class Helper(models.Model):
     created = models.DateTimeField('Created Timestamp', auto_now_add=True)
     last_assigned = models.DateTimeField('Last Assigned Timestamp', auto_now_add=True)
 
+
     status = models.IntegerField(
         default=HelperStatusOptions.ACTIVE,
         choices=HelperStatusOptions.STATUS_CHOICES,

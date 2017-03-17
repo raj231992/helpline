@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block cssLinks %}
-<link href="{% static " vendors/iCheck/skins/flat/green.css" %}" rel="stylesheet">
+<link href="{% static 'vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block pageContent %}
@@ -56,7 +56,7 @@
                                                                 {{ assign.action.task.created | date:"d.m.Y" }}
                                                             </td>
                                                             <td class="text-center">
-                                                                {{ assign.helper }}
+                                                                <a href="{%url 'dashboard:helper_profile' assign.helper.id assign.created.year%}"> {{ assign.helper.user.first_name|title }} {{ assign.helper.user.last_name|title }}</a>
                                                             </td>
                                                             <td class="text-center">
                                                                 {% ifequal  assign.action.task.status 1 %}
@@ -124,7 +124,43 @@
     </div>
 </div>
 <!-- /page content -->
+<!-- jQuery -->
+<script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+<!-- Bootstrap -->
+<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<!-- FastClick -->
+<script src="{% static 'vendors/fastclick/lib/fastclick.js' %}"></script>
+<!-- NProgress -->
+<script src="{% static 'vendors/nprogress/nprogress.js' %}"></script>
+<!-- Chart.js -->
+<script src="{% static 'vendors/Chart.js/dist/Chart.min.js' %}"></script>
+<!-- gauge.js -->
+<script src="{% static 'vendors/bernii/gauge.js/dist/gauge.min.js' %}"></script>
+<!-- bootstrap-progressbar -->
+<script src="{% static 'vendors/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script>
+<!-- iCheck -->
+<script src="{% static 'vendors/iCheck/icheck.min.js' %}"></script>
+<!-- Skycons -->
+<script src="{% static 'vendors/skycons/skycons.js' %}"></script>
+<!-- Flot -->
+<script src="{% static 'vendors/Flot/jquery.flot.js' %}"></script>
+<script src="{% static 'vendors/Flot/jquery.flot.pie.js' %}"></script>
+<script src="{% static 'vendors/Flot/jquery.flot.time.js' %}"></script>
+<script src="{% static 'vendors/Flot/jquery.flot.stack.js' %}"></script>
+<script src="{% static 'vendors/Flot/jquery.flot.resize.js' %}"></script>
+<!-- Flot plugins -->
+<script src="{% static 'js/flot/jquery.flot.orderBars.js' %}"></script>
+<script src="{% static 'js/flot/date.js' %}"></script>
+<script src="{% static 'js/flot/jquery.flot.spline.js' %}"></script>
+<script src="{% static 'js/flot/curvedLines.js' %}"></script>
+<!-- jVectorMap -->
+<script src="{% static 'js/maps/jquery-jvectormap-2.0.3.min.js' %}"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="{% static 'js/moment/moment.min.js' %}"></script>
+<script src="{% static 'js/datepicker/daterangepicker.js' %}"></script>
 
+<!-- Custom Theme Scripts -->
+<script src="{% static 'js/custom.js' %}"></script>
 {% endblock %}
 
 {% block jsLinks %}
