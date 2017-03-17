@@ -149,4 +149,13 @@ class IVR(View):
                 r.addHangup()
         return HttpResponse(r)
 
+class Feedback(View):
+    def get(self,request):
+        r = kookoo.Response()
+        r.addPlayText("Hello World")
+        r.addHangup()
+        return HttpResponse(r)
+
+
+
 
