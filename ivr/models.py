@@ -71,7 +71,7 @@ class FeedbackType(models.Model):
 
 class FeedbackResponse(models.Model):
     feedbackType = models.ForeignKey(FeedbackType, on_delete=models.CASCADE)
-    response = models.IntegerField()
+    response = models.IntegerField(default=2)
 
     def __unicode__(self):
         return str(self.feedbackType.question)
