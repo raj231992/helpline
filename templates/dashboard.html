@@ -23,6 +23,160 @@
 
                                 <div class="">
                                     <div class="page-title">
+                                        <div class="title_left "><h3>Helper Activation Request</h3></div>
+
+                                    </div>
+                                    <div class="clearfix"></div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="x_panel">
+                                                <div class="x_content">
+                                                    <!-- start project list -->
+                                                    <table class="table table-striped projects">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">Username</th>
+                                                            <th class="text-center">First Name</th>
+                                                            <th class="text-center">Last Name</th>
+                                                            <th class="text-center">Email</th>
+                                                            <th class="text-center"></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for user in pending_users %}
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                {{ user.user.username }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ user.user.first_name }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ user.user.last_name}}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ user.user.email}}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a href="{%url 'management:ActivateHelper' user.user.id%}">Activate</a>
+                                                            </td>
+
+                                                        </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                    <!-- end project list -->
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /page content -->
+                        </div>
+                        <div class="col-md-3">
+                            <div class="">
+                                    <div class="page-title">
+                                        <div class="title_left "></div>
+
+                                    </div>
+                                    <div class="clearfix"></div>
+            </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_content">
+                        <div class="col-md-9" style="padding-right: 25px;">
+                            <!-- page content -->
+                            <div>
+
+                                <div class="">
+                                    <div class="page-title">
+                                        <div class="title_left "><h3>Helpers</h3></div>
+
+                                    </div>
+                                    <div class="clearfix"></div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="x_panel">
+                                                <div class="x_content">
+                                                    <!-- start project list -->
+                                                    <table class="table table-striped projects">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">Username</th>
+                                                            <th class="text-center">First Name</th>
+                                                            <th class="text-center">Last Name</th>
+                                                            <th class="text-center">Email</th>
+                                                            <th class="text-center"></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for helper in helpers %}
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                {{ helper.user.username }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ helper.user.first_name }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ helper.user.last_name}}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ helper.user.email}}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a href="{%url 'dashboard:helper_profile' helper.user.id helper.created.year%}">View Profile</a>
+                                                            </td>
+
+                                                        </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                    <!-- end project list -->
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /page content -->
+                        </div>
+                        <div class="col-md-3">
+                            <div class="">
+                                    <div class="page-title">
+                                        <div class="title_left "></div>
+
+                                    </div>
+                                    <div class="clearfix"></div>
+            </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_content">
+                        <div class="col-md-9" style="padding-right: 25px;">
+                            <!-- page content -->
+                            <div>
+
+                                <div class="">
+                                    <div class="page-title">
                                         <div class="title_left "><h3>Tasks</h3></div>
 
                                     </div>

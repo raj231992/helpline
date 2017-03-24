@@ -12,8 +12,11 @@ class Home(LoginRequiredMixin,View):
     def get(self,request):
         user = request.user
         helper = Helper.objects.filter(user=user)
+        pending_users = None
         if helper:
             assigns = Assign.objects.filter(helper__helpline=helper[0].helpline).order_by('-id')
+            helpers = Helper.objects.filter(helpline=helper[0].helpline).exclude(login_status=3)
+            pending_users = Helper.objects.filter(helpline=helper[0].helpline,login_status=3)
             for assign in assigns:
                 print assign.helper.helpline
             pending = 0
@@ -48,6 +51,8 @@ class Home(LoginRequiredMixin,View):
             'completed': completed,
             'rejected': rejected,
             'total': total,
+            'helpers': helpers,
+            'pending_users':pending_users,
         }
         return render(request,'dashboard.html',context)
 

@@ -14,6 +14,9 @@ from registercall.models import CallRequest,Task
 from registercall.options import TaskStatusOptions
 from task_manager.helpers import HelperMethods
 from ivr.models import Call_Forward
+from django.views.generic import View
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 # Create your views here.
 
 class getHelplines(APIView):
@@ -201,6 +204,12 @@ class CallForward(APIView):
         call_forward.save()
         return Response({"notification": "successful"}, status=200)
 
+class ActivateHelper(View):
+    def get(self,request,id):
+        helper = Helper.objects.get(user__id = id)
+        helper.login_status = 2
+        helper.save()
+        return HttpResponseRedirect(reverse('dashboard:home'))
 
 
 
