@@ -13,6 +13,7 @@ class Home(LoginRequiredMixin,View):
         user = request.user
         helper = Helper.objects.filter(user=user)
         pending_users = None
+        helpers = None
         if helper:
             assigns = Assign.objects.filter(helper__helpline=helper[0].helpline).order_by('-id')
             helpers = Helper.objects.filter(helpline=helper[0].helpline).exclude(login_status=3)
