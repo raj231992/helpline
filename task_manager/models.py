@@ -61,6 +61,7 @@ class QandA(models.Model):
     Refers to task
     """
     task = models.ForeignKey(Task, related_name='q_and_a')
+    created = models.DateTimeField('Created Timestamp', auto_now_add=True)
 
     # Question obtained from primary and updated by specialist helper, Answer from specialist
     question = models.CharField(max_length=512, null=True, default=None, blank=True)
