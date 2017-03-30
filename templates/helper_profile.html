@@ -25,6 +25,16 @@
                             {%endfor%}
                           </select>
                         </div>
+                <div class="col-md-3 pull-right">
+                    <br>
+                          <select class="form-control" id="cats" onchange="changeCats()">
+                            <option value="0">Current Category ({{cur_cat}})</option>
+                            <option value="All">All</option>
+                            {%for cat in helper_cats%}
+                            <option value="{{cat.name}}">{{cat.name}}</option>
+                            {%endfor%}
+                          </select>
+                        </div>
 
             </div>
 
@@ -92,7 +102,13 @@
             var e = document.getElementById("years");
             var year = e.options[e.selectedIndex].value;
             if(year!="0")
-            window.location.href = "http://{{request.get_host}}/dashboard/helper_profile/{{pk}}/"+year+"/";
+                window.location.href = "http://{{request.get_host}}/dashboard/helper_profile/{{pk}}/{{cur_cat}}/"+year+"/";
+        }
+        function changeCats() {
+            var e = document.getElementById("cats");
+            var cat = e.options[e.selectedIndex].value;
+            if (cat != "0")
+                window.location.href = "http://{{request.get_host}}/dashboard/helper_profile/{{pk}}/" + cat + "/{{cur_year}}/";
         }
     </script>
 {% endblock %}

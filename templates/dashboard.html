@@ -136,7 +136,7 @@
                                                                 {{ helper.user.email}}
                                                             </td>
                                                             <td class="text-center">
-                                                                <a href="{%url 'dashboard:helper_profile' helper.id helper.created.year%}">View Profile</a>
+                                                                <a href="{%url 'dashboard:helper_profile' helper.id 'All' helper.created.year%}">View Profile</a>
                                                             </td>
 
                                                         </tr>
@@ -210,7 +210,7 @@
                                                                 {{ assign.action.task.created | date:"d.m.Y" }}
                                                             </td>
                                                             <td class="text-center">
-                                                                <a href="{%url 'dashboard:helper_profile' assign.helper.id assign.created.year%}"> {{ assign.helper.user.first_name|title }} {{ assign.helper.user.last_name|title }}</a>
+                                                                <a href="{%url 'dashboard:helper_profile' assign.helper.id 'All' assign.created.year%}"> {{ assign.helper.user.first_name|title }} {{ assign.helper.user.last_name|title }}</a>
                                                             </td>
                                                             <td class="text-center">
                                                                 {% ifequal  assign.action.task.status 1 %}

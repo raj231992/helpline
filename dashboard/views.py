@@ -60,9 +60,13 @@ class Home(LoginRequiredMixin,View):
 class Helper_Profile(LoginRequiredMixin,View):
     login_url = '/web_auth/login/'
     redirect_field_name = 'redirect_to'
-    def get(self,request,pk,year):
+    def get(self,request,pk,year,cat):
         helper = Helper.objects.get(pk=pk)
-        assigns = Assign.objects.filter(created__year=year,helper=helper)
+        if cat!='All':
+            assigns = Assign.objects.filter(created__year=year,helper=helper,action__task__category__name=cat)
+        else:
+            assigns = Assign.objects.filter(created__year=year,helper=helper)
+        helper_cats = HelperCategory.objects.exclude(name='Repeat')
         pen_jan,pen_feb,pen_mar,pen_apr,pen_may,pen_jun,pen_jul,pen_aug,pen_sep,pen_oct,pen_nov,pen_dec=0,0,0,0,0,0,0,0,0,0,0,0
         com_jan, com_feb, com_mar, com_apr, com_may, com_jun, com_jul, com_aug, com_sep, com_oct, com_nov, com_dec = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         rej_jan, rej_feb, rej_mar, rej_apr, rej_may, rej_jun, rej_jul, rej_aug, rej_sep, rej_oct, rej_nov, rej_dec = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -162,6 +166,8 @@ class Helper_Profile(LoginRequiredMixin,View):
             'pk' : pk,
             'helper_first_name' : helper.user.first_name,
             'helper_last_name' : helper.user.last_name,
+            'helper_cats': helper_cats,
+            'cur_cat':cat,
             'years' : years,
             'cur_year': year,
             'pen_jan' : pen_jan,
