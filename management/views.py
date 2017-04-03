@@ -200,6 +200,7 @@ class CallForward(APIView):
         assign = Assign.objects.get(action=action)
         helper_no = assign.helper.helper_number
         client_no = task.call_request.client.client_number
+        Call_Forward.objects.all().delete()
         call_forward = Call_Forward(helper_no=helper_no,caller_no=client_no)
         call_forward.save()
         return Response({"notification": "successful"}, status=200)
