@@ -26,6 +26,20 @@ class Call_Forward(models.Model):
     def __unicode__(self):
         return str(self.helper_no)
 
+class Call_Forward_Details(models.Model):
+    status_choices = (
+        ('initiated','initiated'),
+        ('completed','completed'),
+    )
+    helper_no = models.CharField(max_length=15)
+    caller_no = models.CharField(max_length=15)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length= 15,choices=status_choices,default='initiated')
+
+    def __unicode__(self):
+        return str(self.helper_no)
+
 class Language(models.Model):
     language = models.CharField(max_length=20)
     helpline = models.ForeignKey(HelpLine, on_delete=models.CASCADE)
