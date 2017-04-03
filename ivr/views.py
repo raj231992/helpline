@@ -31,14 +31,12 @@ class IVR(View):
             call_forward = Call_Forward.objects.filter(helper_no=caller_no)
             if call_forward:
                 session_next = Session.CALL_FORWARD
-                caller_no_len = len(caller_no)
+                caller_no = call_forward[0].caller_no
+                caller_no_len = len(call_forward[0].caller_no)
                 caller_no = caller_no[caller_no_len - 10:]
-                call = IVR_Call(sid=sid, caller_no = caller_no, helpline_no=helpline_no, caller_location=caller_location,
-                                session_next=session_next)
-                call.save()
                 call_forward_details = Call_Forward_Details(helper_no=helpline_no,caller_no=caller_no)
                 call_forward_details.save()
-                r.addDial(phoneno=call_forward[0].caller_no)
+                r.addDial(phoneno=caller_no)
                 call_forward_details.status = 'completed'
                 call_forward_details.save()
             else:
