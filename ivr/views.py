@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views.generic import View
-from .models import IVR_Call,Call_Forward,Misc_Audio,Misc_Category,IVR_Audio,Language,Call_Forward_Details
+from .models import IVR_Call,Call_Forward,Misc_Audio,Misc_Category,IVR_Audio,Language,Call_Forward_Details, FeedbackType,Feedback, FeedbackResponse
 from .options import Session
 from management.models import HelperCategory,HelpLine
 import kookoo,requests,json
@@ -158,35 +158,32 @@ class IVR(View):
 
 class Feedback(View):
     def get(self,request):
+        audio_url = "http://safestreet.cse.iitb.ac.in/helpline"
+
+        try:
+            feedback = Feedback.objects.all().order_by('-id')[0]
+        except:
+            pass
+
+
         r = kookoo.Response()
-        r.addPlayText("Hello World")
-        r.addHangup()
+
+        if request.GET.get("event") != "GotDTMF":
+            g = r.append(kookoo.CollectDtmf(maxDigits=1, timeout=5000))
+            feedback_type = FeedbackType.objects.get(id=feedback.current_question)
+            # r.addPlayText(feedback_type.question)
+            # g.append(kookoo.PlayAudio(url=audio_url + audio_obj.audio.name))
+            g.append(kookoo.PlayText(feedback_type.question))
+
+        if request.GET.get("event")=="GotDTMF":
+            if len(request.GET.get("data"))!=0:
+                new_feedback_type = FeedbackType.objects.get(id=feedback.current_question)
+                feedback_resp = FeedbackResponse(feedbackType=new_feedback_type,response = request.GET.get("data"))
+                feedback.feedbackresponses.add(feedback_resp)
+                feedback.current_question+=1
+            if(feedback.current_question > len(FeedbackType.objects.all())):
+                r.addHangup()
         return HttpResponse(r)
-
-
-class Feedbackold(View):
-    def get(self,request):
-        pass
-        # audio_url = "http://safestreet.cse.iitb.ac.in/helpline"
-        # r = kookoo.Response()
-        # try:
-        #     session_next = int(call.session_next)
-        # except:
-        #     pass
-        #
-        # if request.GET.get("event") == "NewCall":
-        #     caller_no = request.GET.get("cid")
-        #
-        #
-        # r = kookoo.Response()
-        # r.addPlayText("Hello World")
-        #
-        # audio_objs = FeedbackType.objects.filter(helpline=helpline, category=audio_cat)
-        # for audio_obj in audio_objs:
-        #     g.append(kookoo.PlayAudio(url=audio_url + audio_obj.audio.name))
-        # r.addHangup()
-        # return HttpResponse(r)
-
 
 
 
