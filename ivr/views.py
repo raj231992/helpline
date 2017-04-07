@@ -10,7 +10,7 @@ import kookoo,requests,json
 class IVR(View):
     def post_data(self,url, data):
         base_url = "http://safestreet.cse.iitb.ac.in:9000/"
-        authentication = ("raj", "r@j2331992")
+        authentication = ("admin", "r@j2331992")
         headers = {'Content-type': 'application/json',}
         r = requests.post(base_url + url, data=json.dumps(data), headers=headers, auth=authentication)
 
@@ -161,27 +161,33 @@ class Feedback(View):
         audio_url = "http://safestreet.cse.iitb.ac.in/helpline"
 
         try:
-            feedback = Feedback.objects.all().order_by('-id')[0]
+            feedback_obj = Feedback.objects.all().order_by('-id')[0]
+            print feedback_obj.current_question
         except:
-            pass
+            feedback_obj = Feedback(current_question=0)
 
+        print "Outside try :"
+        print feedback_obj.current_question
 
         r = kookoo.Response()
 
         if request.GET.get("event") != "GotDTMF":
             g = r.append(kookoo.CollectDtmf(maxDigits=1, timeout=5000))
-            feedback_type = FeedbackType.objects.get(id=feedback.current_question)
+            feedback_type = FeedbackType.objects.get(id=feedback_obj.current_question+1)
             # r.addPlayText(feedback_type.question)
             # g.append(kookoo.PlayAudio(url=audio_url + audio_obj.audio.name))
             g.append(kookoo.PlayText(feedback_type.question))
 
         if request.GET.get("event")=="GotDTMF":
             if len(request.GET.get("data"))!=0:
-                new_feedback_type = FeedbackType.objects.get(id=feedback.current_question)
-                feedback_resp = FeedbackResponse(feedbackType=new_feedback_type,response = request.GET.get("data"))
-                feedback.feedbackresponses.add(feedback_resp)
-                feedback.current_question+=1
-            if(feedback.current_question > len(FeedbackType.objects.all())):
+                new_feedback_type = FeedbackType.objects.get(id=feedback_obj.current_question+1)
+
+                feedback_resp = FeedbackResponse(feedbackType=new_feedback_type,response = int(request.GET.get("data")))
+                feedback_resp.save()
+                feedback_obj.feedbackresponses.add(feedback_resp)
+                feedback_obj.current_question+=1
+                feedback_obj.save()
+            if(feedback_obj.current_question > len(FeedbackType.objects.all())):
                 r.addHangup()
         return HttpResponse(r)
 

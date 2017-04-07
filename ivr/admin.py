@@ -8,6 +8,11 @@ class IVR_Admin(admin.ModelAdmin):
     class Meta:
         model= IVR_Call
 
+class FeedbackType_Admin(admin.ModelAdmin):
+    list_display = ["id","helpline","question","audio"]
+    class Meta:
+        model= FeedbackType
+
 
 admin.site.register(IVR_Call,IVR_Admin)
 admin.site.register(Call_Forward)
@@ -17,5 +22,5 @@ admin.site.register(IVR_Audio)
 admin.site.register(Misc_Audio)
 admin.site.register(Misc_Category)
 admin.site.register(Feedback)
-admin.site.register(FeedbackType)
+admin.site.register(FeedbackType, FeedbackType_Admin)
 admin.site.register(FeedbackResponse)
