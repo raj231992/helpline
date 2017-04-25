@@ -92,9 +92,12 @@ class FeedbackResponse(models.Model):
 
 class Feedback(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    feedbackresponses = models.ManyToManyField(FeedbackResponse)
+    feedbackresponses = models.ManyToManyField(FeedbackResponse, blank=True, null=True)
     # current_question = models.ForeignKey(FeedbackResponse, on_delete=models.CASCADE)
     current_question = models.IntegerField(default=0)
+    isCallRaised = models.BooleanField(default=False)
+    isFeedbackTaken = models.BooleanField(default=False)
+
 
     def __unicode__(self):
         return str(self.id)

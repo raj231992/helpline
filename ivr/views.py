@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views.generic import View
-from .models import IVR_Call,Call_Forward,Misc_Audio,Misc_Category,IVR_Audio,Language,Call_Forward_Details, FeedbackType,Feedback, FeedbackResponse
+from .models import IVR_Call,Call_Forward,Misc_Audio,Misc_Category,IVR_Audio,Language,Call_Forward_Details, FeedbackType, Feedback, FeedbackResponse
 from .options import Session
 from management.models import HelperCategory,HelpLine
 import kookoo,requests,json
@@ -156,22 +156,23 @@ class IVR(View):
                 r.addHangup()
         return HttpResponse(r)
 
-class Feedback(View):
+class FeedbackView(View):
     def get(self,request):
         audio_url = "http://safestreet.cse.iitb.ac.in/helpline"
 
         try:
-            feedback_obj = Feedback.objects.all().order_by('-id')[0]
-            print feedback_obj.current_question
-        except:
-            feedback_obj = Feedback(current_question=0)
+            number_of_questions = len(FeedbackType.objects.all())
+            feedback_obj = Feedback.objects.exclude(current_question=number_of_questions).order_by('-id')[0]
 
-        print "Outside try :"
-        print feedback_obj.current_question
+        except Exception, e:
+            print str(e)
 
         r = kookoo.Response()
 
-        if request.GET.get("event") != "GotDTMF":
+        if (request.GET.get("event") == "NewCall"):
+            r.addPlayText("Good Morning, Dear User we would like to take your feedback on your  experience with the career counselling. ")
+
+        if (request.GET.get("event") != "GotDTMF" and request.GET.get("event") != "Disconnect"):
             g = r.append(kookoo.CollectDtmf(maxDigits=1, timeout=5000))
             feedback_type = FeedbackType.objects.get(id=feedback_obj.current_question+1)
             # r.addPlayText(feedback_type.question)
@@ -179,16 +180,21 @@ class Feedback(View):
             g.append(kookoo.PlayText(feedback_type.question))
 
         if request.GET.get("event")=="GotDTMF":
+
             if len(request.GET.get("data"))!=0:
                 new_feedback_type = FeedbackType.objects.get(id=feedback_obj.current_question+1)
-
                 feedback_resp = FeedbackResponse(feedbackType=new_feedback_type,response = int(request.GET.get("data")))
                 feedback_resp.save()
                 feedback_obj.feedbackresponses.add(feedback_resp)
                 feedback_obj.current_question+=1
                 feedback_obj.save()
-            if(feedback_obj.current_question > len(FeedbackType.objects.all())):
-                r.addHangup()
+
+                if (feedback_obj.current_question >= len(FeedbackType.objects.all())):
+                    feedback_obj.isFeedbackTaken = True
+                    feedback_obj.save()
+                    r.addPlayText("Thank you for your feedback, Have a nice day ")
+                    r.addHangup()
+
         return HttpResponse(r)
 
 
