@@ -162,7 +162,8 @@ class FeedbackView(View):
 
         try:
             number_of_questions = len(FeedbackType.objects.all())
-            feedback_obj = Feedback.objects.exclude(current_question=number_of_questions).order_by('-id')[0]
+            caller_no = request.GET.get("cid")
+            feedback_obj = Feedback.objects.filter(task__call_request__client__client_number = caller_no).filter(isFeedbackTaken=False).order_by('-id')[0]
 
         except Exception, e:
             print str(e)
@@ -170,7 +171,7 @@ class FeedbackView(View):
         r = kookoo.Response()
 
         if (request.GET.get("event") == "NewCall"):
-            r.addPlayText("Good Morning, Dear User we would like to take your feedback on your  experience with the career counselling. ")
+            r.addPlayText("Good Morning, Dear User we would like to take your feedback on your experience with career counselling. ")
 
         if (request.GET.get("event") != "GotDTMF" and request.GET.get("event") != "Disconnect"):
             g = r.append(kookoo.CollectDtmf(maxDigits=1, timeout=5000))

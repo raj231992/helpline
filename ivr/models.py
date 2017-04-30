@@ -88,7 +88,7 @@ class FeedbackResponse(models.Model):
     response = models.IntegerField(default=2)
 
     def __unicode__(self):
-        return str(self.feedbackType.question)
+        return str(self.id)
 
 class Feedback(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)

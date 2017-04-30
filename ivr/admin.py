@@ -14,6 +14,7 @@ class FeedbackType_Admin(admin.ModelAdmin):
         model= FeedbackType
 
 
+
 admin.site.register(IVR_Call,IVR_Admin)
 admin.site.register(Call_Forward)
 admin.site.register(Call_Forward_Details)
