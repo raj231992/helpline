@@ -13,11 +13,16 @@ class FeedbackType_Admin(admin.ModelAdmin):
     class Meta:
         model= FeedbackType
 
+class Call_Details_Admin(admin.ModelAdmin):
+    list_display = ["task","helper_no","caller_no","created","updated","status"]
+    class Meta:
+        model= Call_Forward_Details
+
 
 
 admin.site.register(IVR_Call,IVR_Admin)
 admin.site.register(Call_Forward)
-admin.site.register(Call_Forward_Details)
+admin.site.register(Call_Forward_Details,Call_Details_Admin)
 admin.site.register(Language)
 admin.site.register(IVR_Audio)
 admin.site.register(Misc_Audio)

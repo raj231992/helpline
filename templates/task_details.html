@@ -20,19 +20,20 @@
 
                             <div class="">
                                 <div class="page-title">
-                                    <div class="title_left "><h3>Call Details</h3></div>
+                                    <div class="title_left "><h3>Task Details</h3></div>
 
                                 </div>
                                 <div class="clearfix"></div>
 
                                 <div class="row">
-                                    <div class="col-md-offset-3 col-md-6">
+                                    <div class="col-md-offset-2 col-md-8">
                                         <div class="x_panel">
                                             <div class="x_content">
                                                 <!-- start project list -->
                                                 <table id="calls" class="table table-striped projects">
                                                     <thead>
                                                     <tr>
+                                                        <th class="text-center"></th>
                                                         <th class="text-center">Call Time</th>
                                                         <th class="text-center">Call Duration</th>
                                                     </tr>
@@ -41,10 +42,13 @@
                                                     {% for call in call_forward %}
                                                     <tr>
                                                         <td class="text-center">
+                                                            {{forloop.counter}}
+                                                        </td>
+                                                        <td class="text-center">
                                                             {{ call.created | date:"d.m.Y" }}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{ call.updated | timesince:call.created }}
+                                                            {{ call.created | timesince:call.updated }}
                                                         </td>
 
 
@@ -94,6 +98,7 @@
         $(document).ready(function () {
             $('#calls').dataTable();
         });
+    </script>
 
 {% endblock %}
 
