@@ -8,7 +8,7 @@ import urllib2, time
 
 
 @periodic_task(
-    run_every=(crontab(hour=9, minute=30)),
+    run_every=(crontab(hour=10, minute=34)),
     name="GetFeedback",
     ignore_result=True
 )
