@@ -28,6 +28,7 @@ class RegisterHelper(APIView):
         first_name = data.get("first_name")
         last_name = data.get("last_name")
         password = data.get("password")
+        phone_no = data.get("phone_no")
         email = data.get("email")
         gcm_canonical_id = data.get('gcm_canonical_id')
 
@@ -56,6 +57,7 @@ class RegisterHelper(APIView):
         # Get helpline
         helpline = get_object_or_404(HelpLine, name=helpline)
         helper.user = user
+        helper.helper_number = phone_no
         helper.helpline = helpline
         helper.save()
         # for helper_category in helper_categories:

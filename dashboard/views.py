@@ -34,6 +34,8 @@ class Home(LoginRequiredMixin,View):
                 total += 1
         else:
             assigns = Assign.objects.all().order_by('-id')
+            helpers = Helper.objects.all().order_by('-id')
+            pending_users = Helper.objects.filter(login_status=3)
             pending = 0
             completed = 0
             rejected = 0

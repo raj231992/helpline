@@ -22,12 +22,12 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include('authentication.urls', namespace='authentication')),
     url(r'^web_auth/', include('web_auth.urls', namespace='web_auth')),
-    url(r'^dashboard/', include('dashboard.urls', namespace='dashboard')),
     url(r'^management/', include('management.urls', namespace='management')),
     url(r'^registercall/', include('registercall.urls', namespace='register_call')),
     url(r'^taskmanager/', include('task_manager.urls', namespace='task_manager')),
     url(r'^registerhelper/', include('register_helper.urls', namespace='register_helper')),
-    url(r'^', include('ivr.urls', namespace='ivr')),
+    url(r'^ivr/', include('ivr.urls', namespace='ivr')),
+    url(r'^', include('dashboard.urls', namespace='dashboard')),
 ]
 
 urlpatterns+= static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
