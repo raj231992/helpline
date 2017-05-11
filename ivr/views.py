@@ -16,7 +16,7 @@ class IVR(View):
         r = requests.post(base_url + url, data=json.dumps(data), headers=headers, auth=authentication)
 
     def get(self,request):
-        audio_url = "http://vmocsh.cse.iitb.ac.in/"
+        audio_url = "http://vmocsh.cse.iitb.ac.in/media/"
         r = kookoo.Response()
         sid = request.GET.get("sid")
         try:
@@ -160,7 +160,7 @@ class IVR(View):
 
 class FeedbackView(View):
     def get(self,request):
-        audio_url = "http://vmocsh.cse.iitb.ac.in/"
+        audio_url = "http://vmocsh.cse.iitb.ac.in/media/"
 
         try:
             number_of_questions = len(FeedbackType.objects.all())
