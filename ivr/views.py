@@ -3,19 +3,20 @@ from django.views.generic import View
 from .models import IVR_Call,Call_Forward,Misc_Audio,Misc_Category,IVR_Audio,Language,Call_Forward_Details, FeedbackType, Feedback, FeedbackResponse
 from .options import Session
 from management.models import HelperCategory,HelpLine
+from registercall.models import Task
 import kookoo,requests,json
 
 # Create your views here.
 
 class IVR(View):
     def post_data(self,url, data):
-        base_url = "http://safestreet.cse.iitb.ac.in:9000/"
+        base_url = "http://vmocsh.cse.iitb.ac.in/"
         authentication = ("admin", "r@j2331992")
         headers = {'Content-type': 'application/json',}
         r = requests.post(base_url + url, data=json.dumps(data), headers=headers, auth=authentication)
 
     def get(self,request):
-        audio_url = "http://safestreet.cse.iitb.ac.in/helpline"
+        audio_url = "http://vmocsh.cse.iitb.ac.in/"
         r = kookoo.Response()
         sid = request.GET.get("sid")
         try:
@@ -29,6 +30,7 @@ class IVR(View):
             helpline_no = request.GET.get("called_number")
             caller_location = request.GET.get("circle")
             call_forward = Call_Forward.objects.filter(helper_no=caller_no)
+            task = Task.objects.filter()
             if call_forward:
                 session_next = Session.CALL_FORWARD
                 helper_no = call_forward[0].helper_no
@@ -158,7 +160,7 @@ class IVR(View):
 
 class FeedbackView(View):
     def get(self,request):
-        audio_url = "http://safestreet.cse.iitb.ac.in/helpline"
+        audio_url = "http://vmocsh.cse.iitb.ac.in/"
 
         try:
             number_of_questions = len(FeedbackType.objects.all())

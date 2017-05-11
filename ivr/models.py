@@ -31,6 +31,7 @@ class Call_Forward_Details(models.Model):
         ('initiated','initiated'),
         ('completed','completed'),
     )
+    task = models.ForeignKey(Task,on_delete=models.CASCADE,blank='True',null=True)
     helper_no = models.CharField(max_length=15)
     caller_no = models.CharField(max_length=15)
     created = models.DateTimeField(auto_now_add=True)
