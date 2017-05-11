@@ -141,9 +141,9 @@
                                                     <thead>
                                                     <tr>
                                                         <th class="text-center">Task ID</th>
-                                                        <th class="text-center">Client No</th>
                                                         <th class="text-center">Category</th>
                                                         <th class="text-center">Created</th>
+                                                        <th class="text-center">Client</th>
                                                         <th class="text-center">Helper</th>
                                                         <th class="text-center">Status</th>
                                                     </tr>
@@ -155,13 +155,13 @@
                                                             {{ assign.action.task }}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{ assign.action.task.call_request.client }}
-                                                        </td>
-                                                        <td class="text-center">
                                                             {{ assign.action.task.category }}
                                                         </td>
                                                         <td class="text-center">
                                                             {{ assign.action.task.created | date:"d.m.Y" }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{ assign.action.task.call_request.client }}
                                                         </td>
                                                         <td class="text-center">
                                                             <a href="{%url 'dashboard:helper_profile' assign.helper.id 'All' assign.created.year%}">

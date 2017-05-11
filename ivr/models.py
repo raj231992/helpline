@@ -20,6 +20,7 @@ class IVR_Call(models.Model):
         return str(self.caller_no)
 
 class Call_Forward(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, blank='True', null=True)
     helper_no = models.CharField(max_length=15)
     caller_no = models.CharField(max_length=15)
 

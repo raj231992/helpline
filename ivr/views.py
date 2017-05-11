@@ -35,9 +35,10 @@ class IVR(View):
                 session_next = Session.CALL_FORWARD
                 helper_no = call_forward[0].helper_no
                 caller_no = call_forward[0].caller_no
+                task = call_forward[0].task
                 caller_no_len = len(call_forward[0].caller_no)
                 caller_no = caller_no[caller_no_len - 10:]
-                call_forward_details = Call_Forward_Details(helper_no=helper_no,caller_no=caller_no)
+                call_forward_details = Call_Forward_Details(helper_no=helper_no,caller_no=caller_no,task=task)
                 call_forward_details.save()
                 r.addDial(phoneno=caller_no)
                 call_forward_details.status = 'completed'

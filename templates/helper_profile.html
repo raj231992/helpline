@@ -10,7 +10,14 @@
 <!-- page content -->
 
 <div class="right_col" role="main">
-          <div class="">
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="x_panel">
+                <div class="x_content">
+                    <div class="col-md-12" style="padding-right: 25px;">
+                        <!-- page content -->
+                        <div>
+                            <div class="">
             <div class="page-title">
               <div class="title_left">
                 <h3>{{helper_first_name|title}} {{helper_last_name|title}}</h3>
@@ -48,7 +55,95 @@
               </div>
               <div class="clearfix"></div>
             </div>
+                  </div>
+                        </div>
+                    </div>
+                    </div>
+                      </div>
           </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="col-md-12" style="padding-right: 25px;">
+                        <!-- page content -->
+                        <div>
+
+                            <div class="">
+                                <div class="page-title">
+                                    <div class="title_left "><h3>Tasks</h3></div>
+
+                                </div>
+                                <div class="clearfix"></div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="x_panel">
+                                            <div class="x_content">
+                                                <!-- start project list -->
+                                                <table id="tasks" class="table table-striped projects">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center">Task ID</th>
+                                                        <th class="text-center">Category</th>
+                                                        <th class="text-center">Created</th>
+                                                        <th class="text-center">Client</th>
+                                                        <th class="text-center">Helper</th>
+                                                        <th class="text-center">Status</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for assign in assigns %}
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            {{ assign.action.task }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{ assign.action.task.category }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{ assign.action.task.created | date:"d.m.Y" }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{ assign.action.task.call_request.client }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <a href="{%url 'dashboard:helper_profile' assign.helper.id 'All' assign.created.year%}">
+                                                                {{ assign.helper.user.first_name|title }} {{assign.helper.user.last_name|title }}</a>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {% ifequal assign.action.task.status 1 %}
+                                                            <div class="text-danger">pending</div>
+                                                            {% endifequal %}
+                                                            {% ifequal assign.action.task.status 2 %}
+                                                            <div class="text-success">completed</div>
+                                                            {% endifequal %}
+                                                            {% ifequal assign.action.task.status 3 %}
+                                                            <div class="text-danger">pending</div>
+                                                            {% endifequal %}
+                                                        </td>
+
+                                                    </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                <!-- end project list -->
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /page content -->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
         </div>
 <script src="{% static 'vendors/jquery/dist/jquery.min.js'%}"></script>
     <!-- Bootstrap -->
@@ -102,14 +197,24 @@
             var e = document.getElementById("years");
             var year = e.options[e.selectedIndex].value;
             if(year!="0")
-                window.location.href = "http://{{request.get_host}}/dashboard/helper_profile/{{pk}}/{{cur_cat}}/"+year+"/";
+                window.location.href = "http://{{request.get_host}}/helper_profile/{{pk}}/{{cur_cat}}/"+year+"/";
         }
         function changeCats() {
             var e = document.getElementById("cats");
             var cat = e.options[e.selectedIndex].value;
             if (cat != "0")
-                window.location.href = "http://{{request.get_host}}/dashboard/helper_profile/{{pk}}/" + cat + "/{{cur_year}}/";
+                window.location.href = "http://{{request.get_host}}/helper_profile/{{pk}}/" + cat + "/{{cur_year}}/";
         }
+    </script>
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tasks').dataTable();
+        });
+
     </script>
 {% endblock %}
 

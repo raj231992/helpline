@@ -103,13 +103,13 @@
             var e = document.getElementById("years");
             var year = e.options[e.selectedIndex].value;
             if(year!="0")
-            window.location.href = "http://{{request.get_host}}/dashboard/yearly_stats/{{cur_cat}}/"+year+"/";
+            window.location.href = "http://{{request.get_host}}/yearly_stats/{{cur_cat}}/"+year+"/";
         }
         function changeCats(){
             var e = document.getElementById("cats");
             var cat = e.options[e.selectedIndex].value;
             if(cat!="0")
-            window.location.href = "http://{{request.get_host}}/dashboard/yearly_stats/"+cat+"/{{cur_year}}/";
+            window.location.href = "http://{{request.get_host}}/yearly_stats/"+cat+"/{{cur_year}}/";
         }
     </script>
 {% endblock %}

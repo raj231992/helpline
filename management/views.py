@@ -173,9 +173,12 @@ class getQandA(APIView):
         question = request.data.get("question")
         answer = request.data.get("answer")
         task_id = request.data.get("task_id")
+        client_name = request.data.get("client_name")
         task = Task.objects.get(id=task_id)
         qanda = QandA(task=task,question=question,answer=answer)
         qanda.save()
+        task.call_request.client.name = client_name
+        task.call_request.client.save()
         return Response({"notification": "successful"}, status=200)
 
 class TaskComplete(APIView):
@@ -201,7 +204,7 @@ class CallForward(APIView):
         helper_no = assign.helper.helper_number
         client_no = task.call_request.client.client_number
         Call_Forward.objects.all().delete()
-        call_forward = Call_Forward(helper_no=helper_no,caller_no=client_no)
+        call_forward = Call_Forward(helper_no=helper_no,caller_no=client_no,task=task)
         call_forward.save()
         return Response({"notification": "successful"}, status=200)
 

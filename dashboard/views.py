@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from task_manager.models import Assign
 from register_helper.models import Helper
 from management.models import HelperCategory
+from ivr.models import Call_Forward_Details
+from registercall.models import Task
 # Create your views here.
 
 class Home(LoginRequiredMixin,View):
@@ -169,6 +171,8 @@ class Helper_Profile(LoginRequiredMixin,View):
             'helper_first_name' : helper.user.first_name,
             'helper_last_name' : helper.user.last_name,
             'helper_cats': helper_cats,
+            'helper':helper,
+            'assigns':assigns,
             'cur_cat':cat,
             'years' : years,
             'cur_year': year,
@@ -360,3 +364,11 @@ class Yearly_Stats(LoginRequiredMixin,View):
             'rej_dec' : rej_dec,
         }
         return render(request,'stats_year.html',context)
+
+class Task_Details(LoginRequiredMixin,View):
+    login_url = '/web_auth/login/'
+    redirect_field_name = 'redirect_to'
+    def get(self,request,pk):
+        task = Task.objects.get(id=pk)
+        call_forward = Call_Forward_Details.objects.filter(task=task)
+        return render(request,'task_details.html',{'call_forward':call_forward})
