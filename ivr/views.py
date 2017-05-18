@@ -24,7 +24,35 @@ class IVR(View):
             session_next = int(call.session_next)
         except:
             pass
-
+        if request.GET.get("event") == "Hangup" and request.GET.get("process") == "dial" and request.GET.get(
+                "status") == "answered":
+            helper_no = request.GET.get("cid")
+            call_forward = Call_Forward.objects.get(helper_no=helper_no)
+            caller_no = call_forward.caller_no
+            task = call_forward.task
+            caller_no_len = len(call_forward.caller_no)
+            caller_no = caller_no[caller_no_len - 10:]
+            call_forward_details = Call_Forward_Details.objects.get(helper_no=helper_no, caller_no=caller_no, task=task,status='initiated')
+            call_forward_details.status = "completed"
+            call_forward_details.call_duration = request.GET.get("callduration")
+            call_forward_details.call_pickup_duration = request.GET.get("pickduration")
+            call_forward_details.save()
+            call_forward.delete()
+        if request.GET.get("event") == "Hangup" and request.GET.get("process") == "none":
+            try:
+                helper_no = request.GET.get("cid")
+                call_forward = Call_Forward.objects.get(helper_no=helper_no)
+                caller_no = call_forward.caller_no
+                task = call_forward.task
+                caller_no_len = len(call_forward.caller_no)
+                caller_no = caller_no[caller_no_len - 10:]
+                call_forward_details = Call_Forward_Details.objects.get(helper_no=helper_no, caller_no=caller_no, task=task,
+                                                                        status='initiated')
+                call_forward_details.status = "not_answered"
+                call_forward_details.save()
+                call_forward.delete()
+            except:
+                pass
         if request.GET.get("event")=="NewCall":
             caller_no = request.GET.get("cid")
             helpline_no = request.GET.get("called_number")
@@ -41,14 +69,15 @@ class IVR(View):
                 call_forward_details = Call_Forward_Details(helper_no=helper_no,caller_no=caller_no,task=task)
                 call_forward_details.save()
                 r.addDial(phoneno=caller_no)
-                call_forward_details.status = 'completed'
-                call_forward_details.save()
             else:
-                session_next = Session.DISPLAY_LANGUAGE
-                caller_no_len = len(caller_no)
-                caller_no = caller_no[caller_no_len - 10:]
-                call = IVR_Call(sid=sid,caller_no=caller_no,helpline_no=helpline_no,caller_location=caller_location,session_next=session_next)
-                call.save()
+                try:
+                    session_next = Session.DISPLAY_LANGUAGE
+                    caller_no_len = len(caller_no)
+                    caller_no = caller_no[caller_no_len - 10:]
+                    call = IVR_Call(sid=sid,caller_no=caller_no,helpline_no=helpline_no,caller_location=caller_location,session_next=session_next)
+                    call.save()
+                except:
+                    pass
 
         if session_next == Session.DISPLAY_LANGUAGE:
             g = r.append(kookoo.CollectDtmf(maxDigits=1, timeout=5000))
@@ -147,16 +176,7 @@ class IVR(View):
             r.addPlayAudio(url=audio_url+audio_obj.audio.name)
             r.addHangup()
 
-        if request.GET.get("event")=="Dial" and session_next==Session.CALL_FORWARD:
-            caller_no = request.GET.get("cid")
-            if request.GET.get("status")=="not_answered":
-                call_forward = Call_Forward.objects.get(helper_no=caller_no)
-                call_forward.delete()
-                r.addHangup()
-            else:
-                call_forward = Call_Forward.objects.get(helper_no=caller_no)
-                call_forward.delete()
-                r.addHangup()
+
         return HttpResponse(r)
 
 class FeedbackView(View):

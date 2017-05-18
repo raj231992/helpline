@@ -61,6 +61,7 @@
                     </div>
                       </div>
           </div>
+              </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -197,13 +198,13 @@
             var e = document.getElementById("years");
             var year = e.options[e.selectedIndex].value;
             if(year!="0")
-                window.location.href = "http://{{request.get_host}}/helper_profile/{{pk}}/{{cur_cat}}/"+year+"/";
+                window.location.href = "http://vmocsh.cse.iitb.ac.in/helper_profile/{{pk}}/{{cur_cat}}/"+year+"/";
         }
         function changeCats() {
             var e = document.getElementById("cats");
             var cat = e.options[e.selectedIndex].value;
             if (cat != "0")
-                window.location.href = "http://{{request.get_host}}/helper_profile/{{pk}}/" + cat + "/{{cur_year}}/";
+                window.location.href = "http://vmocsh.cse.iitb.ac.in/helper_profile/{{pk}}/" + cat + "/{{cur_year}}/";
         }
     </script>
     <script type="text/javascript" charset="utf8"

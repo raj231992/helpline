@@ -14,7 +14,7 @@ class FeedbackType_Admin(admin.ModelAdmin):
         model= FeedbackType
 
 class Call_Details_Admin(admin.ModelAdmin):
-    list_display = ["task","helper_no","caller_no","created","updated","status"]
+    list_display = ["task","helper_no","caller_no","created","updated","status","call_duration"]
     class Meta:
         model= Call_Forward_Details
 

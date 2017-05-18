@@ -320,12 +320,20 @@ class Yearly_Stats(LoginRequiredMixin,View):
         years = set()
         for assign in assigns:
             years.add(assign.created.year)
+        categories = HelperCategory.objects.filter(helpline=helper[0].helpline)
 
+        cat_count = []
+
+        for cata in categories:
+            cat_count.append(len(
+                Assign.objects.filter(created__year=year, action__task__category__name=cata,
+                                      action__task__call_request__helpline=helper[0].helpline)))
         context = {
             'years' : years,
             'helper_cats' : helper_cats,
             'cur_year': year,
             'cur_cat' : cat,
+            'cat_count' : cat_count,
             'pen_jan' : pen_jan,
             'pen_feb' : pen_feb,
             'pen_mar' : pen_mar,
@@ -365,6 +373,120 @@ class Yearly_Stats(LoginRequiredMixin,View):
         }
         return render(request,'stats_year.html',context)
 
+class Monthly_Stats(LoginRequiredMixin,View):
+    login_url = '/web_auth/login/'
+    redirect_field_name = 'redirect_to'
+    def get(self,request,cat,month,year):
+        user = request.user
+        helper = Helper.objects.filter(user=user)
+        if month=='Jan':
+            cur_month=1
+        elif month=='Feb':
+            cur_month=2
+        elif month == 'Mar':
+            cur_month = 3
+        elif month == 'Apr':
+            cur_month = 4
+        elif month == 'May':
+            cur_month = 5
+        elif month == 'Jun':
+            cur_month = 6
+        elif month == 'Jul':
+            cur_month = 7
+        elif month == 'Aug':
+            cur_month = 8
+        elif month == 'Sep':
+            cur_month = 9
+        elif month == 'Oct':
+            cur_month = 10
+        elif month == 'Nov':
+            cur_month = 11
+        elif month == 'Dec':
+            cur_month = 12
+        if cat!= 'All':
+            assigns = Assign.objects.filter(created__month=cur_month,created__year=year,action__task__category__name=cat,action__task__call_request__helpline=helper[0].helpline)
+        else:
+            assigns = Assign.objects.filter(created__month=cur_month,created__year=year,action__task__call_request__helpline=helper[0].helpline)
+        helper_cats = HelperCategory.objects.exclude(name='Repeat')
+        pen_week1,pen_week2,pen_week3,pen_week4,pen_week5=0,0,0,0,0
+        com_week1, com_week2, com_week3, com_week4, com_week5 = 0, 0, 0, 0, 0
+        rej_week1, rej_week2, rej_week3, rej_week4, rej_week5 = 0, 0, 0, 0, 0
+
+        for assign in assigns:
+            if (assign.created.day-1)/7 == 0:
+                if assign.action.task.status == 1:
+                    pen_week1+=1
+                elif assign.action.task.status == 2:
+                    com_week1 += 1
+                elif assign.action.task.status == 3:
+                    rej_week1 += 1
+            elif (assign.created.day-1)/7 == 1:
+                if assign.action.task.status == 1:
+                    pen_week2 += 1
+                elif assign.action.task.status == 2:
+                    com_week2 += 1
+                elif assign.action.task.status == 3:
+                    rej_week2 += 1
+            elif (assign.created.day - 1) / 7 == 2:
+                if assign.action.task.status == 1:
+                    pen_week3 += 1
+                elif assign.action.task.status == 2:
+                    com_week3 += 1
+                elif assign.action.task.status == 3:
+                    rej_week3 += 1
+            elif (assign.created.day - 1) / 7 == 3:
+                if assign.action.task.status == 1:
+                    pen_week4 += 1
+                elif assign.action.task.status == 2:
+                    com_week4 += 1
+                elif assign.action.task.status == 3:
+                    rej_week4 += 1
+            elif (assign.created.day - 1) / 7 == 4:
+                if assign.action.task.status == 1:
+                    pen_week5 += 1
+                elif assign.action.task.status == 2:
+                    com_week5 += 1
+                elif assign.action.task.status == 3:
+                    rej_week5 += 1
+
+
+        assigns = Assign.objects.filter(action__task__call_request__helpline=helper[0].helpline)
+        years = set()
+        for assign in assigns:
+            years.add(assign.created.year)
+
+        categories = HelperCategory.objects.filter(helpline=helper[0].helpline)
+
+        cat_count=[]
+
+        for cata in categories:
+            cat_count.append(len(Assign.objects.filter(created__month=cur_month, created__year=year, action__task__category__name=cata,
+                                                       action__task__call_request__helpline=helper[0].helpline)))
+
+        context = {
+            'years' : years,
+            'helper_cats' : helper_cats,
+            'cur_year': year,
+            'cur_month': month,
+            'cur_cat' : cat,
+            'cat_count' : cat_count,
+            'pen_week1' : pen_week1,
+            'pen_week2' : pen_week2,
+            'pen_week3' : pen_week3,
+            'pen_week4' : pen_week4,
+            'pen_week5' : pen_week5,
+            'com_week1' : com_week1,
+            'com_week2' : com_week2,
+            'com_week3' : com_week3,
+            'com_week4' : com_week4,
+            'com_week5' : com_week5,
+            'rej_week1' : rej_week1,
+            'rej_week2' : rej_week2,
+            'rej_week3' : rej_week3,
+            'rej_week4' : rej_week4,
+            'rej_week5' : rej_week5,
+        }
+        return render(request,'stats_month.html',context)
 class Task_Details(LoginRequiredMixin,View):
     login_url = '/web_auth/login/'
     redirect_field_name = 'redirect_to'

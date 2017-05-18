@@ -30,6 +30,7 @@ class Call_Forward(models.Model):
 class Call_Forward_Details(models.Model):
     status_choices = (
         ('initiated','initiated'),
+        ('not_answered','not_answered'),
         ('completed','completed'),
     )
     task = models.ForeignKey(Task,on_delete=models.CASCADE,blank='True',null=True)
@@ -38,6 +39,8 @@ class Call_Forward_Details(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length= 15,choices=status_choices,default='initiated')
+    call_duration = models.CharField(max_length=5,default='0')
+    call_pickup_duration = models.CharField(max_length=5,default='0')
 
     def __unicode__(self):
         return str(self.helper_no)

@@ -33,9 +33,11 @@
                                                 <table id="calls" class="table table-striped projects">
                                                     <thead>
                                                     <tr>
-                                                        <th class="text-center"></th>
+                                                        <th class="text-center">#</th>
                                                         <th class="text-center">Call Time</th>
+                                                        <th class="text-center">Call Pickup Duration</th>
                                                         <th class="text-center">Call Duration</th>
+                                                        <th class="text-center">Status</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -48,7 +50,13 @@
                                                             {{ call.created | date:"d.m.Y" }}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{ call.created | timesince:call.updated }}
+                                                            {{ call.call_pickup_duration}} secs
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{ call.call_duration}} secs
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{ call.status}}
                                                         </td>
 
 

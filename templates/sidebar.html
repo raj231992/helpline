@@ -15,10 +15,14 @@
                 <li><a><i class="fa fa-bar-chart"></i> Stats <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         {% now "Y" as current_year %}
+                        {% now "M" as current_month %}
                         {% with "All" as all %}
                         <li><a href="{%url 'dashboard:yearly_stats' all current_year %}">By Year</a>
                         </li>
+                        <li><a href="{%url 'dashboard:monthly_stats' all current_month current_year %}">By Month</a>
+                        </li>
                         {%endwith%}
+
                     </ul>
                 </li>
 

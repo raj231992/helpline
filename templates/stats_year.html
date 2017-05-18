@@ -9,8 +9,17 @@
 {% block pageContent %}
 <!-- page content -->
 
+
+
 <div class="right_col" role="main">
-          <div class="">
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="x_panel">
+                <div class="x_content">
+                    <div class="col-md-12" style="padding-right: 25px;">
+                        <!-- page content -->
+                        <div>
+                            <div class="">
             <div class="page-title">
               <div class="title_left">
                 <h3>Task Statistics</h3>
@@ -49,8 +58,48 @@
               </div>
               <div class="clearfix"></div>
             </div>
+                  </div>
+                        </div>
+                    </div>
+                    </div>
+                      </div>
           </div>
+              </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="col-md-12" style="padding-right: 25px;">
+                        <!-- page content -->
+                        <div>
+
+                            <div class="">
+                                <div class="page-title">
+                                    <div class="title_left "><h3>Category Stats</h3></div>
+
+                                </div>
+                                <div class="clearfix"></div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="x_panel">
+                                            <div class="x_content">
+                                                <div id="donut-chart" style="height: 500px;"></div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /page content -->
+                    </div>
+
+                </div>
+            </div>
+
         </div>
+    </div>
 <script src="{% static 'vendors/jquery/dist/jquery.min.js'%}"></script>
     <!-- Bootstrap -->
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.min.js'%}"></script>
@@ -64,6 +113,14 @@
     <script src="{% static 'vendors/moment/min/moment.min.js'%}"></script>
     <script src="{% static 'vendors/bootstrap-daterangepicker/daterangepicker.js'%}"></script>
 
+
+    <script src="{% static 'vendors/flot/jquery.flot.min.js'%}"></script>
+<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+<script src="{% static 'vendors/flot/jquery.flot.resize.min.js'%}"></script>
+<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+<script src="{% static 'vendors/flot/jquery.flot.pie.min.js'%}"></script>
+<!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
+<script src="{% static 'vendors/flot/jquery.flot.categories.min.js'%}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{% static 'build/js/custom.min.js'%}"></script>
     <script>
@@ -103,14 +160,57 @@
             var e = document.getElementById("years");
             var year = e.options[e.selectedIndex].value;
             if(year!="0")
-            window.location.href = "http://{{request.get_host}}/yearly_stats/{{cur_cat}}/"+year+"/";
+            window.location.href = "http://vmocsh.cse.iitb.ac.in/yearly_stats/{{cur_cat}}/"+year+"/";
         }
         function changeCats(){
             var e = document.getElementById("cats");
             var cat = e.options[e.selectedIndex].value;
             if(cat!="0")
-            window.location.href = "http://{{request.get_host}}/yearly_stats/"+cat+"/{{cur_year}}/";
+            window.location.href = "http://vmocsh.cse.iitb.ac.in/yearly_stats/"+cat+"/{{cur_year}}/";
         }
+    $(document).ready(function() {
+        var colors=[ "#F57F17","#1A237E","#00c0ef","#D50000","#F50057","#689F38","#607D8B"]
+        var cat=[]
+        var cat_count=[]
+        {%for cat in helper_cats%}
+            cat.push("{{cat}}")
+        {%endfor%}
+        {%for c in cat_count%}
+            cat_count.push("{{c}}")
+        {%endfor%}
+        var donutData = [
+
+        ];
+        for(var i=0;i<cat.length;i++){
+            donutData.push({label: cat[i]+"("+cat_count[i]+")", data: cat_count[i], color: colors[i]})
+        }
+
+        $.plot("#donut-chart", donutData, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 1,
+                    innerRadius: 0.5,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        formatter: labelFormatter,
+                        threshold: 0.1
+                    }
+
+                }
+            },
+            legend: {
+                show: false
+            }
+        });
+        function labelFormatter(label, series) {
+    return '<div style="font-size:15px; text-align:center; color: #fff; font-weight: 600;">'
+        + label
+        + "<br>"
+        + Math.round(series.percent) + "%</div>";
+  }
+    });
     </script>
 {% endblock %}
 
