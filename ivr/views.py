@@ -29,7 +29,7 @@ class IVR(View):
             caller_no = request.GET.get("cid")
             helpline_no = request.GET.get("called_number")
             caller_location = request.GET.get("circle")
-            call_forward = Call_Forward.objects.filter(helper_no=caller_no)
+            call_forward = Call_Forward.objects.filter(helper_no=caller_no[len(caller_no)-10:])
             task = Task.objects.filter()
             if call_forward:
                 session_next = Session.CALL_FORWARD
