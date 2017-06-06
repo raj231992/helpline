@@ -10,7 +10,7 @@
 <!-- page content -->
 
 <div class="right_col" role="main">
-        <div class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_content">
@@ -21,6 +21,53 @@
                             <div class="">
                                 <div class="page-title">
                                     <div class="title_left "><h3>Task Details</h3></div>
+
+                                </div>
+                                <div class="clearfix"></div>
+
+                                <div class="row">
+                                    <div class="col-md-offset-2 col-md-8">
+                                        <div class="x_panel">
+                                            <div class="x_content text-center" style="color:black;font-size: large;">
+                                                <p>Task Id : {{task.id}}</p>
+                                                <p>Task Category : {{task.category}}</p>
+                                                <p>Client : {{task.call_request.client}}</p>
+                                                <p>Task Created : {{task.created | date:"d.m.Y"}}</p>
+                                                {%ifequal feedback.created None%}
+                                                    <p>Task Completed : Not Completed</p>
+                                                    {%else%}
+                                                        <p>Task Completed : {{feedback.created | date:"d.m.Y"}}</p>
+                                                {%endifequal%}
+                                                <p>Assigned Helper : {{helper_name}}</p>
+                                                {%ifnotequal feedback.created None%}
+                                                <p>Question : {{feedback.question}}</p>
+                                                <p>Answer : {{feedback.answer}}</p>
+                                                {%endifnotequal%}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /page content -->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="col-md-12" style="padding-right: 25px;">
+                        <!-- page content -->
+                        <div>
+
+                            <div class="">
+                                <div class="page-title">
+                                    <div class="title_left "><h3>Call Details</h3></div>
 
                                 </div>
                                 <div class="clearfix"></div>

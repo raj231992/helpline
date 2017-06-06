@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from task_manager.models import Assign
+from task_manager.models import Assign,QandA
 from register_helper.models import Helper
 from management.models import HelperCategory
 from ivr.models import Call_Forward_Details
 from registercall.models import Task
+
 # Create your views here.
 
 class Home(LoginRequiredMixin,View):
@@ -166,11 +167,24 @@ class Helper_Profile(LoginRequiredMixin,View):
         for assign in assigns:
             years.add(assign.created.year)
 
+        categories = helper.category.all()
+        assigned_category=""
+        try:
+            if (len(categories) > 1):
+                for category in categories:
+                    assigned_category += category.name + ", "
+                    assigned_category = assigned_category[:len(assigned_category) - 2]
+            else:
+                assigned_category = categories[0].name
+        except:
+            pass
+
         context = {
             'pk' : pk,
             'helper_first_name' : helper.user.first_name,
             'helper_last_name' : helper.user.last_name,
             'helper_cats': helper_cats,
+            'category_assigned': assigned_category,
             'helper':helper,
             'assigns':assigns,
             'cur_cat':cat,
@@ -493,4 +507,23 @@ class Task_Details(LoginRequiredMixin,View):
     def get(self,request,pk):
         task = Task.objects.get(id=pk)
         call_forward = Call_Forward_Details.objects.filter(task=task)
-        return render(request,'task_details.html',{'call_forward':call_forward})
+        feedback = None
+        try:
+            feedback = QandA.objects.filter(task=task)[0]
+        except:
+            pass
+        assigns = Assign.objects.filter(action__task=task)
+        helper_name = ""
+        if(len(assigns)>1):
+            for assign in assigns:
+                helper_name += assign.helper.user.first_name+" "+assign.helper.user.last_name+", "
+            helper_name = helper_name[:len(helper_name)-2]
+        else:
+            helper_name = assigns[0].helper.user.first_name + " " + assigns[0].helper.user.last_name
+        context = {
+            'call_forward': call_forward,
+            'task':task,
+            'feedback':feedback,
+            "helper_name":helper_name
+        }
+        return render(request,'task_details.html',context)

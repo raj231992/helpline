@@ -123,7 +123,6 @@ class IVR(View):
                 helpline = HelpLine.objects.get(helpline_number=call.helpline_no)
                 language = Language.objects.filter(helpline=helpline)[int(call.language_option) - 1]
                 tot_opts = str(len(IVR_Audio.objects.filter(language=language)))
-                print tot_opts,call.category_option
                 if call.category_option== tot_opts:
                     call.session_next = Session.DISPLAY_OPTION
                     call.save()

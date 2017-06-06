@@ -216,6 +216,15 @@ class ActivateHelper(View):
         helper.save()
         return HttpResponseRedirect(reverse('dashboard:home'))
 
+class Refresh_GCM(APIView):
+    def post(self, request):
+        gcm_id = request.data.get("gcm_id")
+        username = request.data.get("username")
+        user = get_object_or_404(User, username=username)
+        helper = get_object_or_404(Helper, user=user)
+        helper.gcm_canonical_id = gcm_id
+        helper.save()
+        return Response({"notification": "successful"}, status=200)
 
 
 

@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from .views import (getHelplines,getHelperProfile,getHelplineCategories,setHelperProfile,getHelperTasks,
-                    HelperAccept,getHelplineNumber,getQandA,TaskComplete,CallForward,ActivateHelper)
+                    HelperAccept,getHelplineNumber,getQandA,TaskComplete,CallForward,ActivateHelper,Refresh_GCM)
 
 urlpatterns = [
     url(r'^gethelplines/$', getHelplines.as_view(), name='getHelplines'),
@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^getQandA/$', getQandA.as_view(), name='getQandA'),
     url(r'^TaskComplete/$', TaskComplete.as_view(), name='TaskComplete'),
     url(r'^CallForward/$', CallForward.as_view(), name='CallForward'),
+    url(r'^RefreshGcm/$', Refresh_GCM.as_view(), name='RefreshGcm'),
     url(r'^activateHelper/(?P<id>[0-9]+)$', ActivateHelper.as_view(), name='ActivateHelper'),
 
 

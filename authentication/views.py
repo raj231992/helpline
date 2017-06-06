@@ -60,3 +60,16 @@ class ActivateHelper(APIView):
             return Response({"notification": "successful"}, status=200)
         else:
             return Response({"notification": "failed"}, status=200)
+
+class ResetPassword(APIView):
+    def post(self, request):
+        data = request.data
+        username = data.get("username")
+        password = data.get("password")
+        user = get_object_or_404(User, username=username)
+        if user is not None:
+            user.set_password(password)
+            user.save()
+            return Response({"notification": "successful"}, status=200)
+        else:
+            return Response({"notification": "failed"}, status=200)

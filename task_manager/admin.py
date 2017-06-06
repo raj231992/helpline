@@ -6,7 +6,7 @@ from django.contrib import admin
 from .models import Action, Assign, QandA
 
 class QandAAdmin(admin.ModelAdmin):
-    list_display = ["task","question","answer"]
+    list_display = ["task","created","question","answer"]
     class Meta:
         model = QandA
 

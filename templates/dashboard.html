@@ -152,7 +152,7 @@
                                                     {% for assign in assigns %}
                                                     <tr>
                                                         <td class="text-center">
-                                                            {{ assign.action.task }}
+                                                            <a href="{%url 'dashboard:task_details' assign.action.task%}">{{ assign.action.task }}</a>
                                                         </td>
                                                         <td class="text-center">
                                                             {{ assign.action.task.category }}

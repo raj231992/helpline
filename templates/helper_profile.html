@@ -10,6 +10,51 @@
 <!-- page content -->
 
 <div class="right_col" role="main">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="col-md-12" style="padding-right: 25px;">
+                        <!-- page content -->
+                        <div>
+
+                            <div class="">
+                                <div class="page-title">
+                                    <div class="title_left "><h3>Task Details</h3></div>
+
+                                </div>
+                                <div class="clearfix"></div>
+
+                                <div class="row">
+                                    <div class="col-md-offset-2 col-md-8">
+                                        <div class="x_panel">
+                                            <div class="x_content text-center" style="color:black;font-size: large;">
+                                                <p>Username : {{helper.user.username}}</p>
+                                                <p>First Name : {{helper.user.first_name}}</p>
+                                                <p>Last Name : {{helper.user.last_name}}</p>
+                                                <p>Phone No : {{helper.helper_number}}</p>
+                                                <p>Email : {{helper.user.email}}</p>
+                                                {%ifequal category_assigned None%}
+                                                    <p>Category Assigned: None</p>
+                                                    {%else%}
+                                                        <p>Category Assigned : {{category_assigned}} </p>
+                                                {%endifequal%}
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /page content -->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
           <div class="row">
               <div class="col-md-12">
                   <div class="x_panel">
@@ -20,7 +65,7 @@
                             <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>{{helper_first_name|title}} {{helper_last_name|title}}</h3>
+                <h3>Task Statistics</h3>
 
               </div>
                 <div class="col-md-3 pull-right">
@@ -98,7 +143,7 @@
                                                     {% for assign in assigns %}
                                                     <tr>
                                                         <td class="text-center">
-                                                            {{ assign.action.task }}
+                                                            <a href="{%url 'dashboard:task_details' assign.action.task%}">{{ assign.action.task }}</a>
                                                         </td>
                                                         <td class="text-center">
                                                             {{ assign.action.task.category }}
