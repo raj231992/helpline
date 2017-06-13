@@ -73,3 +73,20 @@ class QandA(models.Model):
 
     # True/False status to tell if answer given was right or wrong
     verified = models.IntegerField(null=True, blank=True)
+
+class Feedback(models.Model):
+    valid_options = (
+        ('Yes','Yes'),
+        ('No','No'),
+    )
+    status_options = (
+        ('pending','pending'),
+        ('completed','completed')
+    )
+    q_a = models.ForeignKey(QandA, related_name='q_and_a')
+    helper = models.ForeignKey(Helper, related_name='helper')
+    valid = models.CharField(max_length=3,choices=valid_options)
+    status = models.CharField(max_length=13,choices=status_options,default='pending')
+
+    def __str__(self):
+        return str(self.id)

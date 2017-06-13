@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 from .serializers import HelperCategorySerializer,HelplineSerializer
 import json
-from task_manager.models import Action,Assign,QandA
+from task_manager.models import Action,Assign,QandA,Feedback
 from task_manager.options import AssignStatusOptions,ActionStatusOptions
 from django.utils import timezone
 from registercall.models import CallRequest,Task
@@ -17,6 +17,7 @@ from ivr.models import Call_Forward
 from django.views.generic import View
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from notifications import push_notification
 # Create your views here.
 
 class getHelplines(APIView):
@@ -133,6 +134,44 @@ class getHelperTasks(APIView):
 
         return Response({"pending":pending_list,"accepted":accepted_list,"completed":completed_list}, status=200)
 
+class getHelperFeedbackTasks(APIView):
+    def post(self,request):
+        username = request.data.get("username")
+        user = get_object_or_404(User, username=username)
+        helper = get_object_or_404(Helper, user=user)
+        pending_feedback = Feedback.objects.filter(helper=helper,status='pending')
+        completed_feedback = Feedback.objects.filter(helper=helper,status='completed')
+        pending_list = []
+        completed_list = []
+        for feedback in pending_feedback:
+            task_id = feedback.q_a.task.id
+            task_category = feedback.q_a.task.category.name
+            question = feedback.q_a.question
+            answer = feedback.q_a.answer
+            data = {'task_id':task_id,'task_category':task_category,'question':question,'answer':answer}
+            pending_list.append(data)
+        for feedback in completed_feedback:
+            task_id = feedback.q_a.task.id
+            task_category = feedback.q_a.task.category.name
+            question = feedback.q_a.question
+            answer = feedback.q_a.answer
+            reply = feedback.valid
+            data = {'task_id': task_id, 'task_category': task_category, 'question': question, 'answer': answer,'reply':reply}
+            completed_list.append(data)
+        return Response({"pending": pending_list, "completed": completed_list}, status=200)
+class getHelperFeedbackReply(APIView):
+    def post(self, request):
+        username = request.data.get("username")
+        task = request.data.get("task")
+        reply = request.data.get("reply")
+        user = get_object_or_404(User, username=username)
+        helper = get_object_or_404(Helper, user=user)
+        task = Task.objects.get(id=task)
+        feedback = Feedback.objects.get(helper=helper,q_a__task=task)
+        feedback.valid=reply
+        feedback.status='completed'
+        feedback.save()
+        return Response({"notification": "successful"}, status=200)
 class HelperAccept(APIView):
     def post(self,request):
         username = request.data.get("username")
@@ -179,6 +218,15 @@ class getQandA(APIView):
         qanda.save()
         task.call_request.client.name = client_name
         task.call_request.client.save()
+        action = Action.objects.get(task=task)
+        assign = Assign.objects.get(action=action)
+        helper = assign.helper
+        helpers = Helper.objects.exclude(id=helper.id).filter(category=task.category)
+        for helper in helpers:
+            feedback = Feedback(q_a=qanda,helper=helper)
+            feedback.save()
+            # push_notification(helper.gcm_canonical_id,'New Feedback Task')
+
         return Response({"notification": "successful"}, status=200)
 
 class TaskComplete(APIView):
@@ -225,6 +273,7 @@ class Refresh_GCM(APIView):
         helper.gcm_canonical_id = gcm_id
         helper.save()
         return Response({"notification": "successful"}, status=200)
+
 
 
 
