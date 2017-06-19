@@ -20,7 +20,7 @@
 
                             <div class="">
                                 <div class="page-title">
-                                    <div class="title_left "><h3>Task Details</h3></div>
+                                    <div class="title_left "><h3>Helper Details</h3></div>
 
                                 </div>
                                 <div class="clearfix"></div>
@@ -65,7 +65,7 @@
                             <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Task Statistics</h3>
+                <h3>Helper Statistics</h3>
 
               </div>
                 <div class="col-md-3 pull-right">
@@ -159,14 +159,20 @@
                                                                 {{ assign.helper.user.first_name|title }} {{assign.helper.user.last_name|title }}</a>
                                                         </td>
                                                         <td class="text-center">
-                                                            {% ifequal assign.action.task.status 1 %}
+                                                            {% ifequal assign.status 1 %}
                                                             <div class="text-danger">pending</div>
                                                             {% endifequal %}
-                                                            {% ifequal assign.action.task.status 2 %}
+                                                            {% ifequal assign.status 2 %}
+                                                            <div class="text-primary">accepted</div>
+                                                            {% endifequal %}
+                                                            {% ifequal assign.status 6 %}
                                                             <div class="text-success">completed</div>
                                                             {% endifequal %}
-                                                            {% ifequal assign.action.task.status 3 %}
-                                                            <div class="text-danger">pending</div>
+                                                            {% ifequal assign.status 3 %}
+                                                            <div class="text-danger">rejected</div>
+                                                            {% endifequal %}
+                                                            {% ifequal assign.status 4 %}
+                                                            <div class="text-danger">timed out</div>
                                                             {% endifequal %}
                                                         </td>
 
@@ -211,24 +217,24 @@
         Morris.Bar({
           element: 'graphx',
           data: [
-            {x: 'Jan', Pending: {{pen_jan}}, Completed: {{com_jan}}, Rejected: {{rej_jan}}},
-            {x: 'Feb', Pending: {{pen_feb}}, Completed: {{com_feb}}, Rejected: {{rej_feb}}},
-            {x: 'Mar', Pending: {{pen_mar}}, Completed: {{com_mar}}, Rejected: {{rej_mar}}},
-            {x: 'Apr', Pending: {{pen_apr}}, Completed: {{com_apr}}, Rejected: {{rej_apr}}},
-            {x: 'May', Pending: {{pen_may}}, Completed: {{com_may}}, Rejected: {{rej_may}}},
-            {x: 'Jun', Pending: {{pen_jun}}, Completed: {{com_jun}}, Rejected: {{rej_jun}}},
-            {x: 'Jul', Pending: {{pen_jul}}, Completed: {{com_jul}}, Rejected: {{rej_jul}}},
-            {x: 'Aug', Pending: {{pen_aug}}, Completed: {{com_aug}}, Rejected: {{rej_aug}}},
-            {x: 'Sep', Pending: {{pen_sep}}, Completed: {{com_sep}}, Rejected: {{rej_sep}}},
-            {x: 'Oct', Pending: {{pen_oct}}, Completed: {{com_oct}}, Rejected: {{rej_oct}}},
-            {x: 'Nov', Pending: {{pen_nov}}, Completed: {{com_nov}}, Rejected: {{rej_nov}}},
-            {x: 'Dec', Pending: {{pen_dec}}, Completed: {{com_dec}}, Rejected: {{rej_dec}}},
+            {x: 'Jan', Pending: {{pen_jan}}, Completed: {{com_jan}}, Rejected: {{rej_jan}}, Timed_Out: {{to_jan}}},
+            {x: 'Feb', Pending: {{pen_feb}}, Completed: {{com_feb}}, Rejected: {{rej_feb}}, Timed_Out: {{to_feb}}},
+            {x: 'Mar', Pending: {{pen_mar}}, Completed: {{com_mar}}, Rejected: {{rej_mar}}, Timed_Out: {{to_mar}}},
+            {x: 'Apr', Pending: {{pen_apr}}, Completed: {{com_apr}}, Rejected: {{rej_apr}}, Timed_Out: {{to_apr}}},
+            {x: 'May', Pending: {{pen_may}}, Completed: {{com_may}}, Rejected: {{rej_may}}, Timed_Out: {{to_may}}},
+            {x: 'Jun', Pending: {{pen_jun}}, Completed: {{com_jun}}, Rejected: {{rej_jun}}, Timed_Out: {{to_jun}}},
+            {x: 'Jul', Pending: {{pen_jul}}, Completed: {{com_jul}}, Rejected: {{rej_jul}}, Timed_Out: {{to_jul}}},
+            {x: 'Aug', Pending: {{pen_aug}}, Completed: {{com_aug}}, Rejected: {{rej_aug}}, Timed_Out: {{to_aug}}},
+            {x: 'Sep', Pending: {{pen_sep}}, Completed: {{com_sep}}, Rejected: {{rej_sep}}, Timed_Out: {{to_sep}}},
+            {x: 'Oct', Pending: {{pen_oct}}, Completed: {{com_oct}}, Rejected: {{rej_oct}}, Timed_Out: {{to_oct}}},
+            {x: 'Nov', Pending: {{pen_nov}}, Completed: {{com_nov}}, Rejected: {{rej_nov}}, Timed_Out: {{to_nov}}},
+            {x: 'Dec', Pending: {{pen_dec}}, Completed: {{com_dec}}, Rejected: {{rej_dec}}, Timed_Out: {{to_dec}}},
           ],
           xkey: 'x',
-          ykeys: ['Pending', 'Completed', 'Rejected'],
-          barColors: ['#FF9800', '#4CAF50', '#F44336', '#3498DB'],
+          ykeys: ['Pending', 'Completed', 'Rejected', 'Timed_Out'],
+          barColors: ['#d8b400', '#4CAF50', '#F44336', '#FF9800'],
           hideHover: 'auto',
-          labels: ['Pending', 'Completed', 'Rejected'],
+          labels: ['Pending', 'Completed', 'Rejected', 'Timed Out'],
           resize: true
         }).on('click', function (i, row) {
             console.log(i, row);
@@ -263,9 +269,3 @@
 
     </script>
 {% endblock %}
-
-
-
-
-
-

@@ -146,28 +146,18 @@
         Morris.Bar({
             element: 'graphx',
             data: [
-            {x: 'Week 1', Pending: {{pen_week1}}, Completed: {{com_week1}}, Rejected: {{rej_week1}}},
-            {x: 'Week 2', Pending: {{pen_week2}}, Completed: {{com_week2}}, Rejected: {{rej_week2}}},
-            {x: 'Week 3', Pending: {{pen_week3}}, Completed: {{com_week3}}, Rejected: {{rej_week3}}},
-            {x: 'Week 4', Pending: {{pen_week4}}, Completed: {{com_week4}}, Rejected: {{rej_week4}}},
-            {x: 'Week 5', Pending: {{pen_week5}}, Completed: {{com_week5}}, Rejected: {{rej_week5}}},
+            {x: 'Week 1', Pending: {{pen_week1}}, Completed: {{com_week1}}, Rejected: {{rej_week1}}, Timed_Out: {{to_week1}}},
+            {x: 'Week 2', Pending: {{pen_week2}}, Completed: {{com_week2}}, Rejected: {{rej_week2}}, Timed_Out: {{to_week2}}},
+            {x: 'Week 3', Pending: {{pen_week3}}, Completed: {{com_week3}}, Rejected: {{rej_week3}}, Timed_Out: {{to_week3}}},
+            {x: 'Week 4', Pending: {{pen_week4}}, Completed: {{com_week4}}, Rejected: {{rej_week4}}, Timed_Out: {{to_week4}}},
+            {x: 'Week 5', Pending: {{pen_week5}}, Completed: {{com_week5}}, Rejected: {{rej_week5}}, Timed_Out: {{to_week5}}},
         ],
         xkey: 'x',
-                ykeys
-        :
-        ['Pending', 'Completed', 'Rejected'],
-                barColors
-        :
-        ['#FF9800', '#4CAF50', '#F44336', '#3498DB'],
-                hideHover
-        :
-        'auto',
-                labels
-        :
-        ['Pending', 'Completed', 'Rejected'],
-                resize
-        :
-        true
+          ykeys: ['Pending', 'Completed', 'Rejected', 'Timed_Out'],
+          barColors: ['#d8b400', '#4CAF50', '#F44336', '#FF9800'],
+          hideHover: 'auto',
+          labels: ['Pending', 'Completed', 'Rejected', 'Timed Out'],
+          resize: true
     }).
         on('click', function (i, row) {
             console.log(i, row);

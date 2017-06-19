@@ -10,7 +10,7 @@ import json
 from task_manager.models import Action,Assign,QandA,Feedback
 from task_manager.options import AssignStatusOptions,ActionStatusOptions
 from django.utils import timezone
-from registercall.models import CallRequest,Task
+from registercall.models import CallRequest,Task,TaskStatusOptions
 from registercall.options import TaskStatusOptions
 from task_manager.helpers import HelperMethods
 from ivr.models import Call_Forward
@@ -49,12 +49,24 @@ class getHelperProfile(APIView):
         user = get_object_or_404(User,username=username)
         helper = get_object_or_404(Helper,user=user)
         helper_cat = HelperCategorySerializer(helper.category.all(),many=True)
+        pending_assigns = len(Assign.objects.filter(helper=helper, status=AssignStatusOptions.PENDING))
+        accepted_assigns = len(Assign.objects.filter(helper=helper, status=AssignStatusOptions.ACCEPTED))
+        completed_assigns = len(Assign.objects.filter(helper=helper, status=AssignStatusOptions.COMPLETED))
+        rejected_assigns = len(Assign.objects.filter(helper=helper, status=AssignStatusOptions.REJECTED))
+        timeed_out_assigns = len(Assign.objects.filter(helper=helper, status=AssignStatusOptions.TIMEOUT))
         data = {
             "first_name":user.first_name,
             "last_name":user.last_name,
             "email":user.email,
             "phone_no":helper.helper_number,
-            "category":helper_cat.data
+            "category":helper_cat.data,
+            "pending_assigns":pending_assigns,
+            "accepted_assigns":accepted_assigns,
+            "completed_assigns":completed_assigns,
+            "rejected_assigns":rejected_assigns,
+            "timeed_out_assigns":timeed_out_assigns,
+
+
         }
         return Response(data,status=200)
 
@@ -196,6 +208,8 @@ class HelperAccept(APIView):
         else:
             assign.status = AssignStatusOptions.REJECTED
             assign.save()
+            action.status=ActionStatusOptions.REJECTED
+            action.save()
             assigns = Assign.objects.filter(action=action).exclude(status=AssignStatusOptions.REJECTED)
             if len(assigns)==0:
                 assigns = Assign.objects.filter(action=action,status=AssignStatusOptions.REJECTED)
@@ -204,6 +218,8 @@ class HelperAccept(APIView):
                     rejected_helpers.append(assign.helper.id)
                 helpermethod = HelperMethods()
                 data = "New Task Has Been Assigned"
+                action = Action(task=task)
+                action.save()
                 helpermethod.reassign_helpers(action,task.category,data,2,rejected_helpers)
             return Response({"notification":"successful"}, status=200)
 

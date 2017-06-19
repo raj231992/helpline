@@ -14,25 +14,31 @@
     <div class="row">
         <div class="col-md-12">
             <!-- start project list -->
-            <div class="col-md-3">
+            <div class="col-md-2 col-md-offset-1">
                 <div class="text-center tile-stats">
                     <div class="count text-muted">{{completed}}</div>
                     <h3><span class="text-success"><b>Completed</b></span></h3>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="text-center tile-stats">
                     <div class="count text-muted">{{pending}}</div>
                     <h3><span class="text-danger"><b>Pending</b></span></h3>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <div class="text-center tile-stats">
+                    <div class="count text-muted">{{timeout}}</div>
+                    <h3><span class="text-danger"><b>Timed Out</b></span></h3>
+                </div>
+            </div>
+            <div class="col-md-2">
                 <div class="text-center tile-stats">
                     <div class="count text-muted">{{rejected}}</div>
                     <h3><span class="text-danger"><b>Rejected</b></span></h3>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="text-center tile-stats">
                     <div class="count text-muted">{{total}}</div>
                     <h3><span class="text-primary"><b>Total</b></span></h3>
@@ -168,14 +174,20 @@
                                                                 {{ assign.helper.user.first_name|title }} {{assign.helper.user.last_name|title }}</a>
                                                         </td>
                                                         <td class="text-center">
-                                                            {% ifequal assign.action.task.status 1 %}
+                                                            {% ifequal assign.status 1 %}
                                                             <div class="text-danger">pending</div>
                                                             {% endifequal %}
-                                                            {% ifequal assign.action.task.status 2 %}
+                                                            {% ifequal assign.status 2 %}
+                                                            <div class="text-primary">accepted</div>
+                                                            {% endifequal %}
+                                                            {% ifequal assign.status 6 %}
                                                             <div class="text-success">completed</div>
                                                             {% endifequal %}
-                                                            {% ifequal assign.action.task.status 3 %}
-                                                            <div class="text-danger">pending</div>
+                                                            {% ifequal assign.status 3 %}
+                                                            <div class="text-danger">rejected</div>
+                                                            {% endifequal %}
+                                                            {% ifequal assign.status 4 %}
+                                                            <div class="text-danger">timed out</div>
                                                             {% endifequal %}
                                                         </td>
 
@@ -323,7 +335,9 @@
             src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#tasks').dataTable();
+            $('#tasks').dataTable({
+                "order":[[1,"desc"]]
+            });
             $('#activation').dataTable();
             $('#helpers').dataTable();
         });
